@@ -63,31 +63,36 @@ TetrisObject.prototype.update = function (du) {
 
   // TODO - Á kannski heima annarsstaðar
   if (eatKey(this.KEY_LEFT)) {
-    // TODO - Færa kall til vinstri
-    if(this.cx>0){
-      //this.cx-=1;
-      resetGrid();
-      this.cx -=1;
-      
-    }else{
-      //this.cx-=0;
-      this.cx -=0;
-    }
+      //Þetta er þá hliðar collision 
+      //Betra að hafa þessi collisions í falli og merkja sem this.isColliding()
+      //Fallið þarf að taka inn hvaða shape er verið að checka á
+      if(this.cx-1>-1){
+        resetGrid();
+        this.cx-=1;
+        console.log("þetta má!")
+      }else{
+        console.log("neibb");
+      }
   }
 
   if (eatKey(this.KEY_RIGHT)) {
-    // TODO - Færa kall til hægri
-    if(this.cx<10){
+    //Virkar ekki fyrir kassa shape-ið
+    if(this.cx+1<9){
       resetGrid();
       this.cx+=1;
+      console.log("Þetta má!");
     }else{
-      this.cx+=0;
+      console.log("neibb");
     }
   }
 
   if(eatKey(this.KEY_DOWN)){
-    resetGrid();
-    this.cy+=1;
+    
+    if(this.cy+1<19){
+      resetGrid();
+      this.cy+=1;
+      console.log(this.cy);
+    }
   }
 
 

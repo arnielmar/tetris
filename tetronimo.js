@@ -1,6 +1,7 @@
 let curTetromino;
 let curTetrominoColor;
 let colors = ['red'];
+let startX = 4;
 
 //Þetta á ekki heima hérna held ég
 var tetrominos = [];
@@ -12,7 +13,7 @@ function initTetro(){
   //J shape
   tetrominos.push([[0,0], [0,1], [1,1], [2,1]]);
   //Square shape
-  tetrominos.push([[0,0], [1,0], [0,1], [1,1]])
+  tetrominos.push([[1,0], [0,1], [1,1], [0,0]])
   //L shape
   tetrominos.push([[2,0], [0,1], [1,1], [2,1]])
   //S shape
@@ -25,5 +26,6 @@ function createTetro(){
   var randomTetro = Math.floor(Math.random()*tetrominos.length);
   curTetromino = tetrominos[randomTetro]
 }
+
 
 
