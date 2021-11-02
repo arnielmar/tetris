@@ -47,7 +47,7 @@ TetrisObject.prototype.KEY_SWITCH = 'SPACE'.charCodeAt(0); //Ekki viss hvort þe
 
 // Initial, inheritable, default values
 TetrisObject.prototype.rotation = 0;
-TetrisObject.prototype.cx = 5;   // Byrjar í miðjunni (Thorsteinn: því griddið er með width = 10, þannig 5 byrjar það í miðjunni)
+TetrisObject.prototype.cx = 4;   // Byrjar í miðjunni 
 TetrisObject.prototype.cy = 0;                  // Efst uppi
 TetrisObject.prototype.velX = 0;                // TODO
 TetrisObject.prototype.velY = 0;                // TODO
@@ -65,15 +65,20 @@ TetrisObject.prototype.update = function (du) {
   if (eatKey(this.KEY_LEFT)) {
     // TODO - Færa kall til vinstri
     if(this.cx>0){
-      this.cx-=1;
+      //this.cx-=1;
+      resetGrid();
+      this.cx -=1;
+      
     }else{
-      this.cx-=0;
+      //this.cx-=0;
+      this.cx -=0;
     }
   }
 
   if (eatKey(this.KEY_RIGHT)) {
     // TODO - Færa kall til hægri
     if(this.cx<10){
+      resetGrid();
       this.cx+=1;
     }else{
       this.cx+=0;
@@ -81,6 +86,7 @@ TetrisObject.prototype.update = function (du) {
   }
 
   if(eatKey(this.KEY_DOWN)){
+    resetGrid();
     this.cy+=1;
   }
 
@@ -158,10 +164,8 @@ TetrisObject.prototype.render = function (ctx) {
   for(let i = 0; i<curTetromino.length; i++){
     let x = curTetromino[i][0] + this.cx;
     let y = curTetromino[i][1] + this.cy;
-    gridArray[x][y] = 1;
-    let coorX = coordinateArray[x][y].x;
-    let coorY = coordinateArray[x][y].y;
-    ctx.fillStyle = 'blue';
-    ctx.fillRect(coorX, coorY, 21,21);
+    cells[x][y] = {status: 1}
   }
+  
+  
 };

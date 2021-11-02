@@ -96,7 +96,9 @@ function processDiagnostics() {
 
 function renderSimulation(ctx) {
 
-	createGrid();
+	//createGrid();
+
+	drawBoard(g_ctx);
 	entityManager.render(ctx);
 
 	if (g_renderSpatialDebug) spatialManager.render(ctx);
@@ -138,10 +140,9 @@ function preloadDone() {
 	createInitialObjectss();
 	*/
 	createInitialObjects();
-
 	main.init();
 }
 
 // Kick it off
-setUpCanvas();
+setUpCanvas(g_ctx);
 requestPreloads();
