@@ -23,6 +23,9 @@ function createInitialObjects() {
 	// TODO
 	// Viljum við búa til 4 tetris kalla í byrjun?
 	// Einn sem byrjar og næstu 3 sem koma
+
+	//Testa að búa til einn í byrjun
+	entityManager.generateObject({})
 }
 
 // =============
@@ -93,6 +96,9 @@ function processDiagnostics() {
 
 function renderSimulation(ctx) {
 
+	//createGrid();
+
+	drawBoard(g_ctx);
 	entityManager.render(ctx);
 
 	if (g_renderSpatialDebug) spatialManager.render(ctx);
@@ -115,13 +121,15 @@ function requestPreloads() {
 	};
 
 	imagesPreload(requiredImages, g_images, preloadDone);
+	
 }
 
 var g_sprites = {};
 
 function preloadDone() {
 
-	g_sprites.ship = new Sprite(g_images.ship);
+	
+	/*g_sprites.ship = new Sprite(g_images.ship);
 	g_sprites.ship2 = new Sprite(g_images.ship2);
 	g_sprites.rock = new Sprite(g_images.rock);
 
@@ -130,9 +138,11 @@ function preloadDone() {
 
 	entityManager.init();
 	createInitialObjectss();
-
+	*/
+	createInitialObjects();
 	main.init();
 }
 
 // Kick it off
+setUpCanvas(g_ctx);
 requestPreloads();

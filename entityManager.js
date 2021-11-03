@@ -55,7 +55,8 @@ var entityManager = {
   },
 
   generateObject : function(descr) {
-    this._objects(new TetrisObject(descr));
+    //this._objects(new TetrisObject(descr));
+    this._tetrisObjects.push(new TetrisObject(descr));
   },
 
   update: function(du) {

@@ -43,24 +43,59 @@ TetrisObject.prototype.KEY_RIGHT = 'D'.charCodeAt(0);  // Færa kall til hægri
 
 TetrisObject.prototype.KEY_SWITCH = 'C'.charCodeAt(0);  // Geyma kall
 
+TetrisObject.prototype.KEY_SWITCH = 'SPACE'.charCodeAt(0); //Ekki viss hvort þetta sé rétt fyrir space takkan, færa hlutinn neðst á gridinu
+
 // Initial, inheritable, default values
 TetrisObject.prototype.rotation = 0;
-TetrisObject.prototype.cx = g_canvas.width / 2;   // Byrjar í miðjunni
+TetrisObject.prototype.cx = 4;   // Byrjar í miðjunni 
 TetrisObject.prototype.cy = 0;                  // Efst uppi
 TetrisObject.prototype.velX = 0;                // TODO
 TetrisObject.prototype.velY = 0;                // TODO
 TetrisObject.prototype.launchVel = 2;
 TetrisObject.prototype.numSubSteps = 1;
 
+//lélegur góði bara til að sjá virkni
+//Hugsa að það sé best að setja upp aðra js skrá sem heldur utan um alla tetrominos og svo þegar það er búið til tetrishlut þá kallar hann á það fylki,
+//Allir tetris hlutir eru svo með 4 önnur fylki sem eru mögulegu hreyfingarnar sem þeir geta tekið.
+
+
 TetrisObject.prototype.update = function (du) {
 
   // TODO - Á kannski heima annarsstaðar
-  if (keys[this.KEY_LEFT]) {
-    // TODO - Færa kall til vinstri
+  if (eatKey(this.KEY_LEFT)) {
+      //Þetta er þá hliðar collision 
+      //Betra að hafa þessi collisions í falli og merkja sem this.isColliding()
+      //Fallið þarf að taka inn hvaða shape er verið að checka á
+      if(this.cx-1>-1){
+        resetGrid();
+        this.cx-=1;
+        console.log("þetta má!")
+      }else{
+        console.log("neibb");
+      }
   }
-  if (keys[this.KEY_RIGHT]) {
-    // TODO - Færa kall til hægri
+
+  if (eatKey(this.KEY_RIGHT)) {
+    //Virkar ekki fyrir kassa shape-ið
+    if(this.cx+1<9){
+      resetGrid();
+      this.cx+=1;
+      console.log("Þetta má!");
+    }else{
+      console.log("neibb");
+    }
   }
+
+  if(eatKey(this.KEY_DOWN)){
+    
+    if(this.cy+1<19){
+      resetGrid();
+      this.cy+=1;
+      console.log(this.cy);
+    }
+  }
+
+
 
   spatialManager.unregister(this);
   if (this._isDeadNow) {
@@ -86,6 +121,7 @@ TetrisObject.prototype.computeSubStep = function (du) {
 
   // TODO - Þurfum við þetta?
 };
+
 
 TetrisObject.prototype.applyAccel = function (accelX, accelY, du) {
 
@@ -114,16 +150,27 @@ TetrisObject.prototype.applyAccel = function (accelX, accelY, du) {
   this.cy += du * intervalVelY;
 };
 
+/*
 TetrisObject.prototype.getRadius = function () {
   return (this.sprite.width / 2) * 0.9;
 };
+*/
 
 TetrisObject.prototype.render = function (ctx) {
-  var origScale = this.sprite.scale;
+
+  //var origScale = this.sprite.scale;
   // pass my scale into the sprite, for drawing
-  this.sprite.scale = this._scale;
-  this.sprite.drawWrappedCentredAt(
-    ctx, this.cx, this.cy, this.rotation
-  );
-  this.sprite.scale = origScale;
+  //this.sprite.scale = this._scale;
+  //this.sprite.drawWrappedCentredAt(
+   // ctx, this.cx, this.cy, this.rotation
+  //);
+  //this.sprite.scale = origScale;
+
+  for(let i = 0; i<curTetromino.length; i++){
+    let x = curTetromino[i][0] + this.cx;
+    let y = curTetromino[i][1] + this.cy;
+    cells[x][y] = {status: 1}
+  }
+  
+  
 };
