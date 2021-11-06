@@ -13,21 +13,23 @@
 
 
 // A generic contructor which accepts an arbitrary descriptor object
-function TetrisObject(descr) {
 
+
+function TetrisObject(descr) {
   // Common inherited setup logic from Entity
   this.setup(descr);
-
   this.rememberResets();
-
   // Default sprite, if not otherwise specified
   //this.sprite = this.sprite || g_sprites.TetrisObject;
-
   // Set normal drawing scale, and warp state off
   this._scale = 1;
 };
 
+
+
 TetrisObject.prototype = new Entity();
+
+
 
 TetrisObject.prototype.rememberResets = function () {
   // Remember my reset positions
@@ -53,6 +55,9 @@ TetrisObject.prototype.velX = 0;                // TODO
 TetrisObject.prototype.velY = 0;                // TODO
 TetrisObject.prototype.launchVel = 2;
 TetrisObject.prototype.numSubSteps = 1;
+TetrisObject.prototype.tetrominoN = 0;
+//TetrisObject.prototype.test = curTetromino;
+//TetrisObject.prototype.tetromino = curTetromino;
 
 //lélegur góði bara til að sjá virkni
 //Hugsa að það sé best að setja upp aðra js skrá sem heldur utan um alla tetrominos og svo þegar það er búið til tetrishlut þá kallar hann á það fylki,
@@ -92,6 +97,19 @@ TetrisObject.prototype.update = function (du) {
       resetGrid();
       this.cy+=1;
       console.log(this.cy);
+    }
+  }
+
+  if(eatKey(this.KEY_ROTATE)){
+    //resetGrid();
+    //tetrominoRotations+=1;
+    //console.log("Test")
+    //console.log(this.tetromino);
+    //this.tetromino[this.tetrominoN%this.tetromino.length]
+    if(tetrominoTEST.length > 1){
+      resetGrid();
+      this.tetrominoN++;
+      curTetromino = tetrominoTEST[this.tetrominoN % tetrominoTEST.length];
     }
   }
 
@@ -166,13 +184,10 @@ TetrisObject.prototype.render = function (ctx) {
   //);
   //this.sprite.scale = origScale;
 
-  
   for(let r = 0; r<curTetromino.length; r++){
     let x = curTetromino[r][0] + this.cx;
     let y = curTetromino[r][1] + this.cy;
     cells[x][y] = {status: 1}
-}
-  
-  
-  
+  }
+
 };

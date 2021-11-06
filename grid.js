@@ -60,54 +60,9 @@ function drawBoard(ctx){
 
 function setUpCanvas(ctx){
     generateGrid();
-    //initTetro();
-    createTetro();
     drawBoard(ctx);
 }
 
-
-
-
-//Coordinate array
-/*
-let coordinateArray = [...Array(gBArrayHeight)].map(e => Array(gBArrayWidth).fill(0));
-
-let gridArray = [...Array(gBArrayHeight)].map(e => Array(gBArrayWidth).fill(0));
-class Coordinates{
-    constructor(x,y){
-        this.x = x;
-        this.y = y;
-    }
-}
-
-function createGrid(){
-    let i = 0, j = 0;
-    for(let y = 0; y<456; y+=23){
-        for(let x = 0; x < 456; x+=23){
-            coordinateArray[i][j] = new Coordinates(x,y);
-            i++;
-        }
-        j++;
-        i=0;
-    }
-}
-
-function setUpCanvas(){
-
-    g_canvas.width = 598;
-    g_canvas.height = 483;
-    //g_ctx.scale(2,2);
-    
-    // Draw gameboard rectangle
-
-
-    initTetro()
-    createTetro();
-    createGrid();
-}
-*/
-
-//Ætla frekar að testa þetta eins og ég geri með brakeout
 
 
 
