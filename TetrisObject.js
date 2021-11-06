@@ -166,11 +166,13 @@ TetrisObject.prototype.render = function (ctx) {
   //);
   //this.sprite.scale = origScale;
 
-  for(let i = 0; i<curTetromino.length; i++){
-    let x = curTetromino[i][0] + this.cx;
-    let y = curTetromino[i][1] + this.cy;
+  
+  for(let r = 0; r<curTetromino.length; r++){
+    let x = curTetromino[r][0] + this.cx;
+    let y = curTetromino[r][1] + this.cy;
     cells[x][y] = {status: 1}
-  }
+}
+  
   
   
 };

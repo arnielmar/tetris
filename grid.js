@@ -9,7 +9,7 @@ let cellPadding = 2;
 let cells =[];
 
 function generateGrid(){
-    createTetro();
+    //createTetro();
     for(var c = 0; c<=columns; c++){
         cells[c] = [];
         for(var r = 0; r<=rows; r++){
@@ -27,7 +27,6 @@ function resetGrid(){
             cells[c][r] = {status: 0}
         }
     }
-
 }
 
 function drawBoard(ctx){
@@ -48,7 +47,7 @@ function drawBoard(ctx){
             }else{
                 ctx.beginPath();
                 ctx.rect(cellX,cellY,cellWidth,cellHeight);
-                ctx.fillStyle = 'red';
+                ctx.fillStyle = curTetrominoColor;
                 ctx.fill(); 
             }
             
@@ -61,7 +60,7 @@ function drawBoard(ctx){
 
 function setUpCanvas(ctx){
     generateGrid();
-    initTetro();
+    //initTetro();
     createTetro();
     drawBoard(ctx);
 }

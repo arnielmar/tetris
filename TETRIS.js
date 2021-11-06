@@ -55,7 +55,6 @@ function gatherInputs() {
 function updateSimulation(du) {
 
 	processDiagnostics();
-
 	entityManager.update(du);
 }
 
