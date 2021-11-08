@@ -77,6 +77,9 @@ TetrisObject.prototype._height = 0;
 
 TetrisObject.prototype.update = function (du) {
 
+  const currPosX = this.cx;
+  const currPosY = this.cy;
+
   /////////////////////////////////////////////////////////////////////////////////////////////
   // EDGE COLLISIONS
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,8 +107,8 @@ TetrisObject.prototype.update = function (du) {
       this.cy += 1;
     } else {
       // get stuck and kill!
+      console.log("collision")
     }
-    // debugger;
   }
   /////////////////////////////////////////////////////////////////////////////////////////////
   // EDGE COLLISIONS
@@ -140,6 +143,7 @@ TetrisObject.prototype.update = function (du) {
   }
 
   if (this.isColliding()) {
+    console.log("collision");
     // TODO - this.stop()????
   } else {
     spatialManager.register(this);
@@ -148,7 +152,14 @@ TetrisObject.prototype.update = function (du) {
 };
 
 TetrisObject.prototype.isColliding = function() {
+  for(let r = 0; r<this.currentTetromino.length; r++){
+    let x = this.currentTetromino[r][0] + this.cx;
+    let y = this.currentTetromino[r][1] + this.cy;
 
+    let result = g_grid.isOccupied(x,y);
+    if (result) return true;
+  }
+  return false;
 }
 
 TetrisObject.prototype.calcWidthNHeight = function() {
