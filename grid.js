@@ -46,7 +46,9 @@ Grid.prototype.resetGrid = function (){
       this.cells[c] = [];
         for(var r = 0; r <= this.gridRows; r++){
             //merkja 0 ef það er tómt
+
             this.cells[c][r] = {status: 0}
+
         }
     }
 }
