@@ -83,6 +83,15 @@ Grid.prototype.drawBoard = function (ctx){
 
 }
 
+Grid.prototype.isOccupied = function (x, y) {
+  if (this.cells[x][y].status !== 0) return true;
+  return false;
+}
+
+Grid.prototype.occupy - function (x, y, colorcode) {
+  this.cells[x][y].status = colorcode;
+}
+
 Grid.prototype.setUpCanvas = function (ctx){
     this.generateGrid();
     this.drawBoard(ctx);
