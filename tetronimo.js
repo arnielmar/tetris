@@ -1,30 +1,31 @@
-let curTetromino;
+
 let curTetrominoColor;
 let colors = ['red'];
-let startX = 4;
 
-//Þetta á ekki heima hérna held ég
-var tetrominos = [];
-function initTetro(){
-  //T shape
-  tetrominos.push([[1,0], [0,1], [1,1], [2,1]]);
-  //I shape
-  tetrominos.push([[0,0], [1,0], [2,0], [3,0]]);
-  //J shape
-  tetrominos.push([[0,0], [0,1], [1,1], [2,1]]);
-  //Square shape
-  tetrominos.push([[1,0], [0,1], [1,1], [0,0]])
-  //L shape
-  tetrominos.push([[2,0], [0,1], [1,1], [2,1]])
-  //S shape
-  tetrominos.push([[1,0], [2,0], [0,1], [1,1]])
-  //Z shape
-  tetrominos.push([[0,0], [1,0], [1,1], [2,1]])
-}
+let tetrominoRotations = 0;
 
+//Skilgreina öll pieces
+
+const TETROMINOS = [
+  [T, "red"],
+  [I, "blue"],
+  [SQUARE, "purple"],
+  [L, "cyan"],
+  [L2, "brown"],
+  [Z, "green"],
+  [Z2, "yellow"]
+]
+var curTetromino;
 function createTetro(){
-  var randomTetro = Math.floor(Math.random()*tetrominos.length);
-  curTetromino = tetrominos[randomTetro]
+  //hér þarf að búa til fylki af tilbúnum "random tetros"
+  //til þess að geta sýnt svo seinna hvaða tetro er næst í listanum
+  let r  = Math.floor(Math.random() * TETROMINOS.length);
+  //curTetromino = TETROMINOS[r][0];
+  var tetrominoTEST = TETROMINOS[r][0];
+  curTetrominoColor = TETROMINOS[r][1];
+  //Þetta tekur inn parametra
+  //spurning um að taka inn lit líka hérna
+  entityManager.generateObject({tetromino: tetrominoTEST, tetrominoN: 0,currentTetromino: tetrominoTEST[0]});
 }
 
 

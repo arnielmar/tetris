@@ -25,7 +25,8 @@ function createInitialObjects() {
 	// Einn sem byrjar og næstu 3 sem koma
 
 	//Testa að búa til einn í byrjun
-	entityManager.generateObject({})
+	//entityManager.generateObject({})
+	createTetro();
 }
 
 // =============
@@ -55,7 +56,6 @@ function gatherInputs() {
 function updateSimulation(du) {
 
 	processDiagnostics();
-
 	entityManager.update(du);
 }
 

@@ -13,21 +13,23 @@
 
 
 // A generic contructor which accepts an arbitrary descriptor object
-function TetrisObject(descr) {
 
+
+function TetrisObject(descr) {
   // Common inherited setup logic from Entity
   this.setup(descr);
-
   this.rememberResets();
-
   // Default sprite, if not otherwise specified
   //this.sprite = this.sprite || g_sprites.TetrisObject;
-
   // Set normal drawing scale, and warp state off
   this._scale = 1;
 };
 
+
+
 TetrisObject.prototype = new Entity();
+
+
 
 TetrisObject.prototype.rememberResets = function () {
   // Remember my reset positions
@@ -53,6 +55,13 @@ TetrisObject.prototype.velX = 0;                // TODO
 TetrisObject.prototype.velY = 0;                // TODO
 TetrisObject.prototype.launchVel = 2;
 TetrisObject.prototype.numSubSteps = 1;
+
+//Breytur fyrir tetramino
+TetrisObject.prototype.tetromino;
+TetrisObject.prototype.tetrominoN = 0;
+TetrisObject.prototype.currentTetromino;
+//TetrisObject.prototype.currentTetramino;
+
 
 //lélegur góði bara til að sjá virkni
 //Hugsa að það sé best að setja upp aðra js skrá sem heldur utan um alla tetrominos og svo þegar það er búið til tetrishlut þá kallar hann á það fylki,
@@ -93,6 +102,15 @@ TetrisObject.prototype.update = function (du) {
       this.cy+=1;
       console.log(this.cy);
     }
+  }
+
+  if(eatKey(this.KEY_ROTATE)){
+    
+    resetGrid();
+    this.tetrominoN++;
+    this.currentTetromino = this.tetromino[this.tetrominoN%this.tetromino.length]
+
+    //test til að sjá hvort þetta virkar
   }
 
 
@@ -158,6 +176,7 @@ TetrisObject.prototype.getRadius = function () {
 
 TetrisObject.prototype.render = function (ctx) {
 
+  //Sprite hlutir sem við pælum seinna í
   //var origScale = this.sprite.scale;
   // pass my scale into the sprite, for drawing
   //this.sprite.scale = this._scale;
@@ -165,12 +184,10 @@ TetrisObject.prototype.render = function (ctx) {
    // ctx, this.cx, this.cy, this.rotation
   //);
   //this.sprite.scale = origScale;
-
-  for(let i = 0; i<curTetromino.length; i++){
-    let x = curTetromino[i][0] + this.cx;
-    let y = curTetromino[i][1] + this.cy;
+  for(let r = 0; r<this.currentTetromino.length; r++){
+    let x = this.currentTetromino[r][0] + this.cx;
+    let y = this.currentTetromino[r][1] + this.cy;
     cells[x][y] = {status: 1}
-  }
-  
+  } 
   
 };
