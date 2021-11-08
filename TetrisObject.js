@@ -85,26 +85,23 @@ TetrisObject.prototype.update = function (du) {
 
   if (eatKey(this.KEY_LEFT)) {
     if(this.cx > 0){
-      resetGrid();
+      g_grid.resetGrid();
       this.cx-=1;
     }
   }
 
   if (eatKey(this.KEY_RIGHT)) {
-    if((this.cx + this._width) < gridColumns){
-      resetGrid();
+    if((this.cx + this._width) < g_grid.gridColumns){
+      g_grid.resetGrid();
       this.cx+=1;
     }
   }
 
   if(eatKey(this.KEY_DOWN)){
 
-    if(this.cy + this._height < gridRows){
-      resetGrid();
+    if(this.cy + this._height < g_grid.gridRows){
+      g_grid.resetGrid();
       this.cy += 1;
-      console.log(this.cy+ this._height);
-      console.log(this.cy)
-      console.log(this._height)
     } else {
       // get stuck and kill!
     }
@@ -116,7 +113,7 @@ TetrisObject.prototype.update = function (du) {
 
   if(eatKey(this.KEY_ROTATE)){
 
-    resetGrid();
+    g_grid.resetGrid();
     this.tetrominoN++;
     this.currentTetromino = this.tetromino[this.tetrominoN % this.tetromino.length]
 
@@ -229,7 +226,7 @@ TetrisObject.prototype.render = function (ctx) {
   for(let r = 0; r<this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
     let y = this.currentTetromino[r][1] + this.cy;
-    cells[x][y] = {status: 1}
+    g_grid.cells[x][y] = {status: 1}
   }
 
 };

@@ -1,64 +1,75 @@
-let gridRows = 20;
-let gridColumns = 10;
+"use strict";
 
-let cellPadding = 2;
+Grid.prototype - new Entity();
 
-// let cellWidth = 27;
-// let cellHeight = 27;
+function Grid(descr) {
+  for (var property in descr) {
+    this[property] = descr[property];
+  }
 
-let scoreBoardWidth = 30;   // cahnge when optimal
+  // dynamic size
+  this.cellWidth = Math.floor(this.gridWidth / (this.gridColumns + 1)) - this.cellPadding;
+  this.cellHeight = Math.floor(this.gridHeight / (this.gridRows + 1)) - this.cellPadding;
+}
 
-let cellWidth = Math.floor(g_canvas.width / (gridColumns + 1) / 2) - cellPadding;
-let cellHeight = Math.floor(g_canvas.height / (gridRows + 1)) - cellPadding;
-// debugger;
+// stærðar breytur
+Grid.prototype.gridRows = 20;
+Grid.prototype.gridColumns = 10;
 
-// debugger;
+// staðs. breytur
+Grid.prototype.gridWidth = 100;
+Grid.prototype.gridHeight = 100;
+Grid.prototype.cx = 50;
+Grid.prototype.cy = 50;
 
-
+// cell breytur
+Grid.prototype.cellPadding = 2;
+Grid.prototype.cellWidth = 30;
+Grid.prototype.cellHeight = 30;
 
 //Þetta er þá gridið okkar
-const cells =[];
+Grid.prototype.cells = [];
 
-function generateGrid(){
+Grid.prototype.generateGrid = function (){
     //createTetro();
-    for(var c = 0; c<=gridColumns; c++){
-        cells[c] = [];
-        for(var r = 0; r<=gridRows; r++){
+    for(var c = 0; c <= this.gridColumns; c++){
+        this.cells[c] = [];
+        for(var r = 0; r <= this.gridRows; r++){
             //merkja 0 ef það er tómt
-            cells[c][r] = {status: 0}
+            this.cells[c][r] = {status: 0}
         }
     }
 }
 
-function resetGrid(){
-    for(var c = 0; c<=gridColumns; c++){
-        cells[c] = [];
-        for(var r = 0; r<=gridRows; r++){
+Grid.prototype.resetGrid = function (){
+    for(var c = 0; c <= this.gridColumns; c++){
+      this.cells[c] = [];
+        for(var r = 0; r <= this.gridRows; r++){
             //merkja 0 ef það er tómt
-            cells[c][r] = {status: 0}
+            this.cells[c][r] = {status: 0}
         }
     }
 }
 
-function drawBoard(ctx){
-  // debugger;
+Grid.prototype.drawBoard = function (ctx){
     //Búum til einn tetro
-    for(var c = 0; c<=gridColumns; c++){
-        for(var r= 0; r<=gridRows; r++){
-            var cellX = c*(cellWidth+cellPadding);
-            var cellY = r*(cellHeight+cellPadding) + cellPadding;
+    // debugger;
+    for(var c = 0; c <= this.gridColumns; c++){
+        for(var r= 0; r <= this.gridRows; r++){
+            var cellX = this.cx - (this.gridWidth / 2) + c * (this.cellWidth + this.cellPadding);
+            var cellY = this.cy - (this.gridHeight / 2) + r * (this.cellHeight + this.cellPadding) + this.cellPadding;
 
-            if(cells[c][r].status === 0){
+            if(this.cells[c][r].status === 0){
                 //Þá er þetta empty space
                 //TODO tengja svo sprite við þetta
                 //á meðan teiknum við bara kassa
                 ctx.beginPath();
-                ctx.rect(cellX,cellY,cellWidth,cellHeight);
+                ctx.rect(cellX, cellY, this.cellWidth, this.cellHeight);
                 ctx.fillStyle = 'white';
                 ctx.fill();
             }else{
                 ctx.beginPath();
-                ctx.rect(cellX,cellY,cellWidth,cellHeight);
+                ctx.rect(cellX, cellY, this.cellWidth, this.cellHeight);
                 ctx.fillStyle = curTetrominoColor;
                 ctx.fill();
             }
@@ -70,9 +81,9 @@ function drawBoard(ctx){
 
 }
 
-function setUpCanvas(ctx){
-    generateGrid();
-    drawBoard(ctx);
+Grid.prototype.setUpCanvas = function (ctx){
+    this.generateGrid();
+    this.drawBoard(ctx);
 }
 
 
