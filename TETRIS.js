@@ -14,6 +14,15 @@ var g_ctx = g_canvas.getContext("2d");
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
+// ======================
+// UGLY GLOBAL
+// ======================
+const g_grid = new Grid({
+  gridWidth: Math.floor(g_canvas.width / 2),
+  gridHeight: g_canvas.height,
+  cx: Math.floor(g_canvas.width / 4),
+  cy: Math.floor(g_canvas.height / 2)
+})
 
 // ======================
 // CREATE INITIAL OBJECTS
@@ -26,6 +35,8 @@ function createInitialObjects() {
 
 	//Testa að búa til einn í byrjun
 	//entityManager.generateObject({})
+
+
 	createTetro();
 }
 
@@ -98,7 +109,7 @@ function renderSimulation(ctx) {
 
 	//createGrid();
 
-	drawBoard(g_ctx);
+	g_grid.drawBoard(g_ctx);
 	entityManager.render(ctx);
 
 	if (g_renderSpatialDebug) spatialManager.render(ctx);
@@ -121,14 +132,14 @@ function requestPreloads() {
 	};
 
 	imagesPreload(requiredImages, g_images, preloadDone);
-	
+
 }
 
 var g_sprites = {};
 
 function preloadDone() {
 
-	
+
 	/*g_sprites.ship = new Sprite(g_images.ship);
 	g_sprites.ship2 = new Sprite(g_images.ship2);
 	g_sprites.rock = new Sprite(g_images.rock);
@@ -140,9 +151,11 @@ function preloadDone() {
 	createInitialObjectss();
 	*/
 	createInitialObjects();
+
 	main.init();
 }
 
 // Kick it off
-setUpCanvas(g_ctx);
+// debugger;
+g_grid.setUpCanvas(g_ctx);
 requestPreloads();
