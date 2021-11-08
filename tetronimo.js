@@ -1,4 +1,4 @@
-let curTetromino;
+
 let curTetrominoColor;
 let colors = ['red'];
 
@@ -15,22 +15,17 @@ const TETROMINOS = [
   [Z, "green"],
   [Z2, "yellow"]
 ]
-var tetrominoTEST
-
+var curTetromino;
 function createTetro(){
   //hér þarf að búa til fylki af tilbúnum "random tetros"
   //til þess að geta sýnt svo seinna hvaða tetro er næst í listanum
   let r  = Math.floor(Math.random() * TETROMINOS.length);
-  tetrominoTEST = TETROMINOS[r][0];
-
-  //tetramino
-  curTetromino = tetrominoTEST[tetrominoRotations];
-  //liturinn
+  //curTetromino = TETROMINOS[r][0];
+  var tetrominoTEST = TETROMINOS[r][0];
   curTetrominoColor = TETROMINOS[r][1];
-
   //Þetta tekur inn parametra
-  entityManager.generateObject({})
-  //frekar kalla hérna á new object, með curTetro sem parameter og curTetroColor.
+  //spurning um að taka inn lit líka hérna
+  entityManager.generateObject({tetromino: tetrominoTEST, tetrominoN: 0,currentTetromino: tetrominoTEST[0]});
 }
 
 

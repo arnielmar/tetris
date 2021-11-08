@@ -55,9 +55,13 @@ TetrisObject.prototype.velX = 0;                // TODO
 TetrisObject.prototype.velY = 0;                // TODO
 TetrisObject.prototype.launchVel = 2;
 TetrisObject.prototype.numSubSteps = 1;
+
+//Breytur fyrir tetramino
+TetrisObject.prototype.tetromino;
 TetrisObject.prototype.tetrominoN = 0;
-//TetrisObject.prototype.test = curTetromino;
-//TetrisObject.prototype.tetromino = curTetromino;
+TetrisObject.prototype.currentTetromino;
+//TetrisObject.prototype.currentTetramino;
+
 
 //lélegur góði bara til að sjá virkni
 //Hugsa að það sé best að setja upp aðra js skrá sem heldur utan um alla tetrominos og svo þegar það er búið til tetrishlut þá kallar hann á það fylki,
@@ -101,16 +105,12 @@ TetrisObject.prototype.update = function (du) {
   }
 
   if(eatKey(this.KEY_ROTATE)){
-    //resetGrid();
-    //tetrominoRotations+=1;
-    //console.log("Test")
-    //console.log(this.tetromino);
-    //this.tetromino[this.tetrominoN%this.tetromino.length]
-    if(tetrominoTEST.length > 1){
-      resetGrid();
-      this.tetrominoN++;
-      curTetromino = tetrominoTEST[this.tetrominoN % tetrominoTEST.length];
-    }
+    
+    resetGrid();
+    this.tetrominoN++;
+    this.currentTetromino = this.tetromino[this.tetrominoN%this.tetromino.length]
+
+    //test til að sjá hvort þetta virkar
   }
 
 
@@ -176,6 +176,7 @@ TetrisObject.prototype.getRadius = function () {
 
 TetrisObject.prototype.render = function (ctx) {
 
+  //Sprite hlutir sem við pælum seinna í
   //var origScale = this.sprite.scale;
   // pass my scale into the sprite, for drawing
   //this.sprite.scale = this._scale;
@@ -183,11 +184,10 @@ TetrisObject.prototype.render = function (ctx) {
    // ctx, this.cx, this.cy, this.rotation
   //);
   //this.sprite.scale = origScale;
-
-  for(let r = 0; r<curTetromino.length; r++){
-    let x = curTetromino[r][0] + this.cx;
-    let y = curTetromino[r][1] + this.cy;
+  for(let r = 0; r<this.currentTetromino.length; r++){
+    let x = this.currentTetromino[r][0] + this.cx;
+    let y = this.currentTetromino[r][1] + this.cy;
     cells[x][y] = {status: 1}
-  }
-
+  } 
+  
 };
