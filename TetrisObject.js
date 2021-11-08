@@ -97,33 +97,15 @@ TetrisObject.prototype.update = function (du) {
   // Held það sé í lagi að hafa þetta hérna, isColliding er þá bara fyrir hlut í hlut collision
 
   if (eatKey(this.KEY_LEFT)) {
-
-    if(this.cx > 0){
-      g_grid.resetGrid();
-      this.cx-=1;
-    }
+    this.oneLeft();
   }
 
   if (eatKey(this.KEY_RIGHT)) {
-    if((this.cx + this._width) < g_grid.gridColumns){
-      g_grid.resetGrid();
-
-      this.cx+=1;
-    }
+    this.oneRight();
   }
 
   if(eatKey(this.KEY_DOWN)){
-
-
-    if(this.cy + this._height < g_grid.gridRows){
-      g_grid.resetGrid();
-      this.cy += 1;
-    } else {
-      // get stuck and kill!
-
-      console.log("collision")
-
-    }
+    this.oneDown();
   }
   /////////////////////////////////////////////////////////////////////////////////////////////
   // EDGE COLLISIONS
@@ -159,6 +141,9 @@ TetrisObject.prototype.update = function (du) {
     this.computeSubStep(dStep);
   }
 
+  // make sure it dosent collide with itself
+  // this.reset();
+
   if (this.isColliding()) {
     console.log("collision");
     // TODO - this.stop()????
@@ -169,9 +154,9 @@ TetrisObject.prototype.update = function (du) {
   this.dropRate -= du;
   if(this.dropRate<0){
     this.reset();
-    this.cy+=1;
+    this.oneDown();
     this.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
-    
+
   }
 
 };
@@ -208,6 +193,33 @@ TetrisObject.prototype.calcWidthNHeight = function() {
   this._width = wLargestX;
   this._height = hLargestX;
 
+}
+
+TetrisObject.prototype.oneDown = function () {
+  if(this.cy + this._height < g_grid.gridRows){
+    this.reset();
+    this.cy += 1;
+  } else {
+    // get stuck and kill!
+
+    console.log("collision")
+
+  }
+}
+
+TetrisObject.prototype.oneRight = function () {
+  if((this.cx + this._width) < g_grid.gridColumns){
+    g_grid.resetGrid();
+
+    this.cx+=1;
+  }
+}
+
+TetrisObject.prototype.oneLeft = function () {
+  if(this.cx > 0){
+    g_grid.resetGrid();
+    this.cx-=1;
+  }
 }
 
 TetrisObject.prototype.computeSubStep = function (du) {
@@ -249,11 +261,11 @@ TetrisObject.prototype.getRadius = function () {
 };
 */
 TetrisObject.prototype.reset = function (){
-  for(let r = 0; r<this.currentTetromino.length; r++){
+  for(let r = 0; r < this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
     let y = this.currentTetromino[r][1] + this.cy;
-    cells[x][y] = {status: 0}
-  } 
+    g_grid.cells[x][y] = {status: 0}
+  }
 }
 
 TetrisObject.prototype.render = function (ctx) {
@@ -266,7 +278,7 @@ TetrisObject.prototype.render = function (ctx) {
    // ctx, this.cx, this.cy, this.rotation
   //);
   //this.sprite.scale = origScale;
-  
+
   for(let r = 0; r<this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
     let y = this.currentTetromino[r][1] + this.cy;

@@ -84,7 +84,9 @@ Grid.prototype.drawBoard = function (ctx){
 }
 
 Grid.prototype.isOccupied = function (x, y) {
-  if (this.cells[x][y].status !== 0) return true;
+  // 0 = blank space, 1 = moving tetris object
+  const stat = this.cells[x][y].status
+  if (stat !== 0 && stat !== 1) return true;
   return false;
 }
 
