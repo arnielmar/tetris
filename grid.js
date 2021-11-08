@@ -25,6 +25,7 @@ function resetGrid(){
         for(var r = 0; r<=rows; r++){
             //merkja 0 ef það er tómt
             cells[c][r] = {status: 0}
+            //bætist við ef gæji deyr þá er hann merktur með 2 
         }
     }
 }

@@ -97,7 +97,6 @@ function processDiagnostics() {
 function renderSimulation(ctx) {
 
 	//createGrid();
-
 	drawBoard(g_ctx);
 	entityManager.render(ctx);
 
@@ -146,3 +145,4 @@ function preloadDone() {
 // Kick it off
 setUpCanvas(g_ctx);
 requestPreloads();
+
