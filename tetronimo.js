@@ -7,13 +7,13 @@ let tetrominoRotations = 0;
 //Skilgreina öll pieces
 
 const TETROMINOS = [
-  [T, "red"],
-  [I, "blue"],
-  [SQUARE, "purple"],
-  [L, "cyan"],
-  [L2, "brown"],
+  [T, "purple"],
+  [I, "turkish"],
+  [SQUARE, "yellow"],
+  [L, "blue"],
+  [L2, "orange"],
   [Z, "green"],
-  [Z2, "yellow"]
+  [Z2, "red"]
 ]
 var curTetromino;
 function createTetro(){
@@ -25,7 +25,13 @@ function createTetro(){
   curTetrominoColor = TETROMINOS[r][1];
   //Þetta tekur inn parametra
   //spurning um að taka inn lit líka hérna
-  entityManager.generateObject({tetromino: tetrominoTEST, tetrominoN: 0,currentTetromino: tetrominoTEST[0]});
+  entityManager.generateObject(
+    {
+      tetromino: tetrominoTEST,
+      tetrominoN: 0,
+      currentTetromino: tetrominoTEST[0]
+    }
+  );
 }
 
 

@@ -68,10 +68,14 @@ Grid.prototype.drawBoard = function (ctx){
                 ctx.fillStyle = 'white';
                 ctx.fill();
             }else{
+                // Hér get ég svo teiknað sprite
+                /*
                 ctx.beginPath();
                 ctx.rect(cellX, cellY, this.cellWidth, this.cellHeight);
                 ctx.fillStyle = curTetrominoColor;
                 ctx.fill();
+                */
+                g_sprites.red.drawAt(ctx, cellX, cellY);
             }
 
             //Annars er þetta partur af tetramino
