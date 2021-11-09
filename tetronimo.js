@@ -19,7 +19,7 @@ var curTetromino;
 //Hugsanlega hafa tvö föll
 //createInitialTetromino
 //og svo createNextTetromino
-function createInitTetro(){
+function createTetro(){
   //hér þarf að búa til fylki af tilbúnum "random tetros"
   //til þess að geta sýnt svo seinna hvaða tetro er næst í listanum
   let r  = Math.floor(Math.random() * TETROMINOS.length);

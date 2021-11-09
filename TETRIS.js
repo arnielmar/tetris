@@ -35,7 +35,7 @@ function createInitialObjects() {
 
 	//Testa að búa til einn í byrjun
 	//entityManager.generateObject({})
-	createInitTetro();
+	createTetro();
 }
 
 // =============

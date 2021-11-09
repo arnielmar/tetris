@@ -81,12 +81,6 @@ Grid.prototype.drawBoard = function (ctx){
 }
 
 
-function drawText(ctx){
-    ctx.font = "30px Arial";
-    ctx.fillText("Next", 330, 50);
-}
-
-
 Grid.prototype.isOccupied = function (x, y) {
   // 0 = blank space, 1 = moving tetris object
   const stat = this.cells[x][y].status
