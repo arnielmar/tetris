@@ -67,13 +67,11 @@ Grid.prototype.drawBoard = function (ctx){
                 // Teikna sprite á þessu cell
                 this.cells[c][r].sprite.drawAt(ctx, cellX, cellY);
             }
-
             //Annars er þetta partur af tetramino
-
         }
     }
-
 }
+
 
 Grid.prototype.isOccupied = function (x, y) {
   // 0 = blank space, 1 = moving tetris object
