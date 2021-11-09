@@ -270,19 +270,13 @@ TetrisObject.prototype.reset = function (){
 
 TetrisObject.prototype.render = function (ctx) {
 
-  //Sprite hlutir sem við pælum seinna í
-  //var origScale = this.sprite.scale;
-  // pass my scale into the sprite, for drawing
-  //this.sprite.scale = this._scale;
-  //this.sprite.drawWrappedCentredAt(
-   // ctx, this.cx, this.cy, this.rotation
-  //);
-  //this.sprite.scale = origScale;
-
   for(let r = 0; r<this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
     let y = this.currentTetromino[r][1] + this.cy;
-    g_grid.cells[x][y] = {status: 1}
+    g_grid.cells[x][y] = {
+      status: 1,
+      sprite: this.currentTetroSprite
+    }
   }
 
 };
