@@ -26,7 +26,7 @@ function createInitialObjects() {
 
 	//Testa að búa til einn í byrjun
 	//entityManager.generateObject({})
-	createTetro();
+	createInitTetro();
 }
 
 // =============
@@ -98,6 +98,7 @@ function renderSimulation(ctx) {
 
 	//createGrid();
 	drawBoard(g_ctx);
+	drawText(ctx);
 	entityManager.render(ctx);
 
 	if (g_renderSpatialDebug) spatialManager.render(ctx);

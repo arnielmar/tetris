@@ -51,17 +51,21 @@ function drawBoard(ctx){
                 ctx.fillStyle = curTetrominoColor;
                 ctx.fill(); 
             }
-            
             //Annars er þetta partur af tetramino
-
         }
     }
-
 }
 
-function setUpCanvas(ctx){
+
+function drawText(ctx){
+    ctx.font = "30px Arial";
+    ctx.fillText("Next", 330, 50);
+}
+
+function setUpCanvas(ctx){    
     generateGrid();
-    drawBoard(ctx);
+    //drawBoard(ctx);
+    //drawText(ctx);
 }
 
 

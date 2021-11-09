@@ -113,6 +113,7 @@ TetrisObject.prototype.update = function (du) {
   }
 
   if(eatKey(this.KEY_ROTATE)){
+    console.log(this.currNextTetromino);
     this.reset();
     this.tetrominoN++;
     this.currentTetromino = this.tetromino[this.tetrominoN%this.tetromino.length]
@@ -212,5 +213,25 @@ TetrisObject.prototype.render = function (ctx) {
     let y = this.currentTetromino[r][1] + this.cy;
     cells[x][y] = {status: 1}
   } 
+
+  //smá test
+  //bæta alltaf við 27
   
+  /*
+  var number = 27;
+  for(let i = 0; i<this.currNextTetromino.length; i++){
+
+    //þetta virkar allavega
+    let x = this.currNextTetromino[i][0];
+    let y = this.currNextTetromino[i][1];
+    ctx.beginPath();
+    ctx.rect(x+number+400,y+number+20,27,27);
+    ctx.fillStyle = 'red';
+    ctx.fill();
+    number+=27; 
+  }
+  */
+  
+ //Það þarf að staðsetja þetta í öðru hliðar griddi
+ //til þess að ég get rendarað næsta hlut
 };
