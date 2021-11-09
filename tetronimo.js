@@ -60,5 +60,11 @@ function createNextTetro(){
                               });
 }
 
+function drawText(ctx){
+  ctx.font = "30px Arial";
+  ctx.fillText("Next", 330, 50);
+}
+
+
 
 
