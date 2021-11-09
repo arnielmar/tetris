@@ -119,16 +119,19 @@ function renderSimulation(ctx) {
 // =============
 // PRELOAD STUFF
 // =============
-// TODO - Breytti þessu ekki eins og er, þurfum að skipta um myndir hér ef við
-//        ætlum að nota sprites.
 var g_images = {};
 
 function requestPreloads() {
 
 	var requiredImages = {
-		ship: "https://notendur.hi.is/~pk/308G/images/ship.png",
-		ship2: "https://notendur.hi.is/~pk/308G/images/ship_2.png",
-		rock: "https://notendur.hi.is/~pk/308G/images/rock.png"
+		blue: "./images/blueTile.png",
+		green: "./images/greenTile.png",
+		orange: "./images/orangeTile.png",
+		purple: "./images/purpleTile.png",
+		red: "./images/redTile.png",
+		turkish: "./images/turkishTile.png",
+		yellow: "./images/yellowTile.png",
+    empty: "./images/emptyTile.png"
 	};
 
 	imagesPreload(requiredImages, g_images, preloadDone);
@@ -139,17 +142,15 @@ var g_sprites = {};
 
 function preloadDone() {
 
+  g_sprites.blue = new Sprite(g_images.blue);
+  g_sprites.green = new Sprite(g_images.green);
+  g_sprites.orange = new Sprite(g_images.orange);
+  g_sprites.purple = new Sprite(g_images.purple);
+  g_sprites.red = new Sprite(g_images.red);
+  g_sprites.turkish = new Sprite(g_images.turkish);
+  g_sprites.yellow = new Sprite(g_images.yellow);
+  g_sprites.empty = new Sprite(g_images.empty);
 
-	/*g_sprites.ship = new Sprite(g_images.ship);
-	g_sprites.ship2 = new Sprite(g_images.ship2);
-	g_sprites.rock = new Sprite(g_images.rock);
-
-	g_sprites.bullet = new Sprite(g_images.ship);
-	g_sprites.bullet.scale = 0.25;
-
-	entityManager.init();
-	createInitialObjectss();
-	*/
 	createInitialObjects();
 
 	main.init();
@@ -157,6 +158,6 @@ function preloadDone() {
 
 // Kick it off
 // debugger;
-g_grid.setUpCanvas(g_ctx);
 requestPreloads();
+g_grid.setUpCanvas(g_ctx);
 
