@@ -62,18 +62,10 @@ Grid.prototype.drawBoard = function (ctx){
             var cellY = this.cy - (this.gridHeight / 2) + r * (this.cellHeight + this.cellPadding) + this.cellPadding;
 
             if(this.cells[c][r].status === 0){
-                //Þá er þetta empty space
-                //TODO tengja svo sprite við þetta
-                //á meðan teiknum við bara kassa
-                ctx.beginPath();
-                ctx.rect(cellX, cellY, this.cellWidth, this.cellHeight);
-                ctx.fillStyle = 'white';
-                ctx.fill();
+                g_sprites.empty.drawAt(ctx, cellX, cellY);
             }else{
-                ctx.beginPath();
-                ctx.rect(cellX, cellY, this.cellWidth, this.cellHeight);
-                ctx.fillStyle = curTetrominoColor;
-                ctx.fill();
+                // Teikna sprite á þessu cell
+                this.cells[c][r].sprite.drawAt(ctx, cellX, cellY);
             }
             //Annars er þetta partur af tetramino
         }
