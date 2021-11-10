@@ -42,5 +42,26 @@ function createTetro() {
 
 
 
+function createNextTetro(){
+  
+  //Ferlið er þá að í upphafi eru búnir til tveir hlutir
+  //þegar tetro hlutur er drepinn þá er núverandi tetro settur sem nextTetro
+  // eitthvað í þessa áttina tetromino=nextTetromino
 
+  //Svo köllum við alltaf á þetta fall til að generate-a næsta tetromino-ið til að sýna notendanum
+
+  //Get svo almennilega testað þetta þegar allt collision dótið er komið
+  let r  = Math.floor(Math.random() * TETROMINOS.length);
+  var tetromino = TETROMINOS[r][0];
+
+  //vantar lit
+  entityManager.generateObject({nextTetromino: nextTetrominoTEST,
+                                currNextTetromino: nextTetrominoTEST[0]
+                              });
+}
+
+function drawText(ctx){
+  ctx.font = "30px Arial";
+  ctx.fillText("Next", 330, 50);
+}
 

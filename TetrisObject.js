@@ -105,23 +105,18 @@ TetrisObject.prototype.update = function (du) {
   }
 
   if(eatKey(this.KEY_DOWN)){
-    this.oneDown();
+      this.oneDown();
   }
   /////////////////////////////////////////////////////////////////////////////////////////////
   // EDGE COLLISIONS
   /////////////////////////////////////////////////////////////////////////////////////////////
 
   if(eatKey(this.KEY_ROTATE)){
-
-
-    g_grid.resetGrid();
-    this.tetrominoN++;
-    this.currentTetromino = this.tetromino[this.tetrominoN % this.tetromino.length]
-
-    //test til að sjá hvort þetta virkar
-
-    // reCalculate width and height
+    this.rotate();
     this.calcWidthNHeight();
+
+    //let nextPatter = this.tetromino[(this.tetrominoN+1)%this.tetromino.length]
+  
 
     // þarf að passa að það brotni ekkert þegar kubbur snýst.
 
@@ -146,17 +141,20 @@ TetrisObject.prototype.update = function (du) {
 
   if (this.isColliding()) {
     console.log("collision");
+    console.log("er ég hérna");
     // TODO - this.stop()????
+
+    //byrja að gera þetta fall sem merkir sem 2
   } else {
     spatialManager.register(this);
   }
 
+  //Vantar enþá collision þegar það er ýtt niður
   this.dropRate -= du;
-  if(this.dropRate<0){
+  if(this.dropRate<0 && this.cy + this._height < g_grid.gridRows+1){
     this.reset();
-    this.oneDown();
     this.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
-
+    this.oneDown();
   }
 
 };
@@ -196,30 +194,146 @@ TetrisObject.prototype.calcWidthNHeight = function() {
 }
 
 TetrisObject.prototype.oneDown = function () {
-  if(this.cy + this._height < g_grid.gridRows){
-    this.reset();
-    this.cy += 1;
-  } else {
-    // get stuck and kill!
-
+  if((this.cy + this._height < g_grid.gridRows)){
+      if(!this.objectCollisionDown()){
+        this.reset();
+        this.cy+=1;
+      }else{
+        this.spawnNew();
+      }
+      
+  }else{
     console.log("collision")
-
+    this.spawnNew();
   }
+}
+
+TetrisObject.prototype.spawnNew = function (){
+  this.kill();
+  console.log(g_grid.cells);
+  createTetro();
 }
 
 TetrisObject.prototype.oneRight = function () {
   if((this.cx + this._width) < g_grid.gridColumns){
-    g_grid.resetGrid();
-
-    this.cx+=1;
+      if(!this.objectCollisionRight()){
+        this.reset();
+        this.cx+=1;
+      }
   }
 }
 
 TetrisObject.prototype.oneLeft = function () {
   if(this.cx > 0){
-    g_grid.resetGrid();
-    this.cx-=1;
+    if(!this.objectCollisionLeft()){
+
+      this.reset();
+      this.cx-=1;
+    }
+    
   }
+}
+
+
+TetrisObject.prototype.objectCollisionDown= function (){
+  if(this.cy<19){
+    //Þetta er enþá smá glitchy þarf að skoða þetta betur
+  if(g_grid.cells[this.cx][this.cy+this._height+1].status === 1){
+    return true;
+  }else{
+    return false;
+  }
+}
+return false;
+
+}
+
+TetrisObject.prototype.objectCollisionRight = function (){
+
+  var biggerX = 0;
+  var biggerWidth = 0;
+  let x;
+  let y;
+  console.log(this.currNextTetromino.length);
+  for(let r = 0; r < this.currentTetromino.length; r++){
+    x = this.currentTetromino[r][0] + this.cx;
+    y = this.currentTetromino[r][1] + this.cy;
+    if(x>biggerX){
+      biggerX = x;
+    }
+  }
+  //Þarf að skoða þetta betur, þetta checkar bara collision á neðsta kassanum
+  //Þarf líklegast að loopa í gegnum allt
+  console.log(this.cy);
+ if((g_grid.cells[biggerX+1][this.cy+this._height].status===1) || (g_grid.cells[biggerX+1][this.cy].status===1)){
+   return true;
+ }else{
+   return false;
+ }
+}
+
+
+
+TetrisObject.prototype.objectCollisionLeft = function (){
+
+  if((g_grid.cells[this.cx-1][this.cy+this._height].status===1) || (g_grid.cells[this.cx-1][this.cy].status===1)){
+    return true;
+  }else{
+    return false;
+  }
+
+    
+}
+
+
+
+TetrisObject.prototype.rotate = function(){
+  
+  //frekar að athuga með next pattern
+    if(this.cx + this._width<g_grid.gridColumns){
+      if((this._height === 0 || this._height === 3) && (this.cx <=11 && this.cx> 6)){
+        this.reset();
+        this.cx = 6;
+      }
+      this.reset();
+      this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
+      this.currentTetromino = this.tetromino[this.tetrominoN];
+      
+    }
+    if(this.cx + this._width>=g_grid.gridColumns){
+      //Þetta virkar fyrir alla kubbana nema I
+      //Bara eitt tilvik þar sem þetta virkar ekki, þegar I kubburinn er alveg útí enda láréttur
+      //ætla að skoða þetta betur seinni
+      if((this._height !== 0 || this._height !== 3)){
+        
+        this.reset();
+        this.cx = 8;
+        this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
+        this.currentTetromino = this.tetromino[this.tetrominoN];
+      } 
+    }
+
+}
+
+TetrisObject.prototype.testCollision = function(x,y,tetromino){
+  for(var r = 0; r<tetromino.length; r++){
+    for(var c = 0; c<tetromino.length; c++){
+
+      let newX = this.x+c+x;
+      let newY = this.y+r+y;
+      if(newX < 0 || newX >= g_grid.gridColumns || newY >= g_grid.gridRows){
+        //console.log("þetta má")
+        return true;
+      }
+
+      if(newY < 0){
+        continue;
+      }
+    }
+  }
+  return false;
+  
+
 }
 
 TetrisObject.prototype.computeSubStep = function (du) {
@@ -260,11 +374,24 @@ TetrisObject.prototype.getRadius = function () {
   return (this.sprite.width / 2) * 0.9;
 };
 */
+
+/*TetrisObejct.prototype.checkCollision = function (){
+  for(r=0; r<this.currentTetromino.length)
+}
+*/
 TetrisObject.prototype.reset = function (){
   for(let r = 0; r < this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
     let y = this.currentTetromino[r][1] + this.cy;
     g_grid.cells[x][y] = {status: 0}
+  }
+}
+
+TetrisObject.prototype.killTetromino = function (){
+  for(let r = 0; r < this.currentTetromino.length; r++){
+    let x = this.currentTetromino[r][0] + this.cx;
+    let y = this.currentTetromino[r][1] + this.cy;
+    g_grid.cells[x][y] = {status: 2}
   }
 }
 
