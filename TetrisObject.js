@@ -87,8 +87,6 @@ TetrisObject.prototype.dropRate= 1000 / NOMINAL_UPDATE_INTERVAL;
 
 TetrisObject.prototype.update = function (du) {
 
-  const currPosX = this.cx;
-  const currPosY = this.cy;
 
   /////////////////////////////////////////////////////////////////////////////////////////////
   // EDGE COLLISIONS
@@ -105,6 +103,10 @@ TetrisObject.prototype.update = function (du) {
   }
 
   if(eatKey(this.KEY_DOWN)){
+      //this.reset();
+      //this.oneDown();
+      //g_grid.resetGrid();
+      this.reset();
       this.oneDown();
   }
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -122,6 +124,15 @@ TetrisObject.prototype.update = function (du) {
 
   }
 
+  for(let r = 0; r<this.currentTetromino.length; r++){
+    let x = this.currentTetromino[r][0] + this.cx;
+    let y = this.currentTetromino[r][1] + this.cy;
+    g_grid.cells[x][y] = {
+      status: 1,
+      sprite: this.currentTetroSprite
+    }
+  }
+
 
 
   spatialManager.unregister(this);
@@ -129,13 +140,7 @@ TetrisObject.prototype.update = function (du) {
     return entityManager.KILL_ME_NOW;
   }
 
-  // Perform movement substeps
-  var steps = this.numSubSteps;
-  var dStep = du / steps;
-  for (var i = 0; i < steps; ++i) {
-    this.computeSubStep(dStep);
-  }
-
+  
   // make sure it dosent collide with itself
   // this.reset();
 
@@ -155,6 +160,8 @@ TetrisObject.prototype.update = function (du) {
     this.reset();
     this.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
     this.oneDown();
+    //this.cy++;
+    
   }
 
 };
@@ -193,24 +200,28 @@ TetrisObject.prototype.calcWidthNHeight = function() {
 
 }
 
+
+
+
 TetrisObject.prototype.oneDown = function () {
   if((this.cy + this._height < g_grid.gridRows)){
+      //if(!this.objectCollisionDown()){
       if(!this.objectCollisionDown()){
         this.reset();
         this.cy+=1;
       }else{
         this.spawnNew();
-      }
-      
+      }  
   }else{
     console.log("collision")
+    
     this.spawnNew();
+    
   }
 }
 
 TetrisObject.prototype.spawnNew = function (){
   this.kill();
-  console.log(g_grid.cells);
   createTetro();
 }
 
@@ -222,6 +233,7 @@ TetrisObject.prototype.oneRight = function () {
       }
   }
 }
+
 
 TetrisObject.prototype.oneLeft = function () {
   if(this.cx > 0){
@@ -236,25 +248,24 @@ TetrisObject.prototype.oneLeft = function () {
 
 
 TetrisObject.prototype.objectCollisionDown= function (){
-  if(this.cy<19){
-    //Þetta er enþá smá glitchy þarf að skoða þetta betur
-  if(g_grid.cells[this.cx][this.cy+this._height+1].status === 1){
-    return true;
-  }else{
-    return false;
+  //Þessi kóði virkar 
+  let tetrominoCopy = this.currentTetromino;
+  for(let i =0; i<tetrominoCopy.length;i++){
+    let square = tetrominoCopy[i];
+    let x = square[0]+this.cx;
+    let y = square[1]+this.cy;
+    if(g_grid.cells[x][y+1].status===1){
+      return true;
+    }
   }
-}
-return false;
-
+  return false;
 }
 
 TetrisObject.prototype.objectCollisionRight = function (){
-
+  //Þetta er gallað
   var biggerX = 0;
-  var biggerWidth = 0;
   let x;
   let y;
-  console.log(this.currNextTetromino.length);
   for(let r = 0; r < this.currentTetromino.length; r++){
     x = this.currentTetromino[r][0] + this.cx;
     y = this.currentTetromino[r][1] + this.cy;
@@ -262,9 +273,6 @@ TetrisObject.prototype.objectCollisionRight = function (){
       biggerX = x;
     }
   }
-  //Þarf að skoða þetta betur, þetta checkar bara collision á neðsta kassanum
-  //Þarf líklegast að loopa í gegnum allt
-  console.log(this.cy);
  if((g_grid.cells[biggerX+1][this.cy+this._height].status===1) || (g_grid.cells[biggerX+1][this.cy].status===1)){
    return true;
  }else{
@@ -274,8 +282,14 @@ TetrisObject.prototype.objectCollisionRight = function (){
 
 
 
-TetrisObject.prototype.objectCollisionLeft = function (){
 
+
+
+
+
+
+TetrisObject.prototype.objectCollisionLeft = function (){
+  //Þetta er gallað
   if((g_grid.cells[this.cx-1][this.cy+this._height].status===1) || (g_grid.cells[this.cx-1][this.cy].status===1)){
     return true;
   }else{
@@ -284,7 +298,6 @@ TetrisObject.prototype.objectCollisionLeft = function (){
 
     
 }
-
 
 
 TetrisObject.prototype.rotate = function(){
@@ -315,70 +328,28 @@ TetrisObject.prototype.rotate = function(){
 
 }
 
-TetrisObject.prototype.testCollision = function(x,y,tetromino){
-  for(var r = 0; r<tetromino.length; r++){
-    for(var c = 0; c<tetromino.length; c++){
+TetrisObject.prototype.testCollision = function(){
+  for(var r = 0; r<this.currentTetromino.length; r++){
 
-      let newX = this.x+c+x;
-      let newY = this.y+r+y;
+      let newX = this.currentTetromino[r][0] + this.cx;
+      let newY = this.currentTetromino[r][1] + this.cy;
+
       if(newX < 0 || newX >= g_grid.gridColumns || newY >= g_grid.gridRows){
-        //console.log("þetta má")
         return true;
       }
 
       if(newY < 0){
         continue;
       }
-    }
+
+      if(g_grid.cells[newX][newY].status === 1){
+        return true;
+      }
   }
   return false;
-  
-
 }
 
-TetrisObject.prototype.computeSubStep = function (du) {
 
-  // TODO - Þurfum við þetta?
-};
-
-
-TetrisObject.prototype.applyAccel = function (accelX, accelY, du) {
-
-  // u = original velocity
-  var oldVelX = this.velX;
-  var oldVelY = this.velY;
-
-  // v = u + at
-  this.velX += accelX * du;
-  this.velY += accelY * du;
-
-  // v_ave = (u + v) / 2
-  var aveVelX = (oldVelX + this.velX) / 2;
-  var aveVelY = (oldVelY + this.velY) / 2;
-
-  // Decide whether to use the average or not (average is best!)
-  var intervalVelX = g_useAveVel ? aveVelX : this.velX;
-  var intervalVelY = g_useAveVel ? aveVelY : this.velY;
-
-  // s = s + v_ave * t
-  var nextX = this.cx + intervalVelX * du;
-  var nextY = this.cy + intervalVelY * du;
-
-  // s = s + v_ave * t
-  this.cx += du * intervalVelX;
-  this.cy += du * intervalVelY;
-};
-
-/*
-TetrisObject.prototype.getRadius = function () {
-  return (this.sprite.width / 2) * 0.9;
-};
-*/
-
-/*TetrisObejct.prototype.checkCollision = function (){
-  for(r=0; r<this.currentTetromino.length)
-}
-*/
 TetrisObject.prototype.reset = function (){
   for(let r = 0; r < this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
@@ -396,7 +367,7 @@ TetrisObject.prototype.killTetromino = function (){
 }
 
 TetrisObject.prototype.render = function (ctx) {
-
+  
   for(let r = 0; r<this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
     let y = this.currentTetromino[r][1] + this.cy;
