@@ -40,8 +40,6 @@ function createTetro() {
 
 }
 
-
-
 function createNextTetro(){
   
   //Ferlið er þá að í upphafi eru búnir til tveir hlutir
