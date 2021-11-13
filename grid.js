@@ -89,7 +89,22 @@ Grid.prototype.setUpCanvas = function (ctx){
     this.drawBoard(ctx);
 }
 
-
+// Fallið virkar til að checka hvort raðir séu fullar
+// TODO - Taka röð út, lækka allt fyrir ofan um 1
+Grid.prototype.checkRows = function () {
+  for (let r = this.gridRows; r >= 0; r--) {
+    let rowFull = true;
+    for (let c = 0; c <= this.gridColumns; c++) {
+      if (this.cells[c][r].status !== 1) {
+        rowFull = false;
+        break;
+      }
+    }
+    if (rowFull) {
+      console.log('Röðin er full');
+    }
+  }
+}
 
 
 

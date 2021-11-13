@@ -74,8 +74,13 @@ TetrisObject.prototype.currNextTetromino;
 
 //TetrisObject.prototype.currentTetramino;
 
+// Lines, levels and speed
+TetrisObject.prototype.lines = 0;
+TetrisObject.prototype.level = 1;     // Level hækkar eftir hverjar 10 línur
+TetrisObject.prototype.speed = 1000;  // Lækka þetta eftir hverjar 10 línur
+
 //"Gravity"
-TetrisObject.prototype.dropRate= 1000 / NOMINAL_UPDATE_INTERVAL;
+TetrisObject.prototype.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
 
 
 
@@ -118,7 +123,7 @@ TetrisObject.prototype.update = function (du) {
     this.calcWidthNHeight();
 
     //let nextPatter = this.tetromino[(this.tetrominoN+1)%this.tetromino.length]
-  
+
 
     // þarf að passa að það brotni ekkert þegar kubbur snýst.
 
@@ -140,7 +145,7 @@ TetrisObject.prototype.update = function (du) {
     return entityManager.KILL_ME_NOW;
   }
 
-  
+
   // make sure it dosent collide with itself
   // this.reset();
 
@@ -158,10 +163,10 @@ TetrisObject.prototype.update = function (du) {
   this.dropRate -= du;
   if(this.dropRate<0 && this.cy + this._height < g_grid.gridRows+1){
     this.reset();
-    this.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
+    this.dropRate = this.speed / NOMINAL_UPDATE_INTERVAL;
     this.oneDown();
     //this.cy++;
-    
+
   }
 
 };
@@ -211,12 +216,12 @@ TetrisObject.prototype.oneDown = function () {
         this.cy+=1;
       }else{
         this.spawnNew();
-      }  
+      }
   }else{
     console.log("collision")
-    
+
     this.spawnNew();
-    
+
   }
 }
 
@@ -242,13 +247,13 @@ TetrisObject.prototype.oneLeft = function () {
       this.reset();
       this.cx-=1;
     }
-    
+
   }
 }
 
 
 TetrisObject.prototype.objectCollisionDown= function (){
-  //Þessi kóði virkar 
+  //Þessi kóði virkar
   let tetrominoCopy = this.currentTetromino;
   for(let i =0; i<tetrominoCopy.length;i++){
     let square = tetrominoCopy[i];
@@ -296,12 +301,12 @@ TetrisObject.prototype.objectCollisionLeft = function (){
     return false;
   }
 
-    
+
 }
 
 
 TetrisObject.prototype.rotate = function(){
-  
+
   //frekar að athuga með next pattern
     if(this.cx + this._width<g_grid.gridColumns){
       if((this._height === 0 || this._height === 3) && (this.cx <=11 && this.cx> 6)){
@@ -311,19 +316,19 @@ TetrisObject.prototype.rotate = function(){
       this.reset();
       this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
       this.currentTetromino = this.tetromino[this.tetrominoN];
-      
+
     }
     if(this.cx + this._width>=g_grid.gridColumns){
       //Þetta virkar fyrir alla kubbana nema I
       //Bara eitt tilvik þar sem þetta virkar ekki, þegar I kubburinn er alveg útí enda láréttur
       //ætla að skoða þetta betur seinni
       if((this._height !== 0 || this._height !== 3)){
-        
+
         this.reset();
         this.cx = 8;
         this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
         this.currentTetromino = this.tetromino[this.tetrominoN];
-      } 
+      }
     }
 
 }
@@ -367,7 +372,7 @@ TetrisObject.prototype.killTetromino = function (){
 }
 
 TetrisObject.prototype.render = function (ctx) {
-  
+
   for(let r = 0; r<this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
     let y = this.currentTetromino[r][1] + this.cy;
@@ -376,5 +381,9 @@ TetrisObject.prototype.render = function (ctx) {
       sprite: this.currentTetroSprite
     }
   }
+
+  // Er núna að checka í hverju renderi sem er líklega óþarfi
+  // Betra að checka eitthversstaðar um leið og tetromino er orðinn fastur
+  g_grid.checkRows();
 
 };
