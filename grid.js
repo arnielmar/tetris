@@ -30,10 +30,11 @@ Grid.prototype.cellHeight = 30;
 //Þetta er þá gridið okkar
 Grid.prototype.cells = [];
 
-// Heldur utan um línur sprengdar, level og hraða tetrominos
+// Scoring system
 Grid.prototype.lines = 0;
 Grid.prototype.level = 1;
 Grid.prototype.speed = 1000;
+Grid.prototype.score = 0;
 
 Grid.prototype.generateGrid = function (){
     //createTetro();
@@ -121,6 +122,7 @@ Grid.prototype.checkRows = function () {
     }
   }
 
+  // Bæta línum við og athuga hvort level sé að breytast
   this.lines += rowsFull;
   // Checka hvort við séum að levela upp
   if (this.lines >= 10) {
@@ -132,6 +134,32 @@ Grid.prototype.checkRows = function () {
       this.speed -= 100;
     }
   }
+
+  // Virkar ekki alveg rétt því það er kallað svo oft á þetta að rowsFull er aldrei meira en 1
+  // Bæta við score (original Nintendo Tetris scoring system)
+  switch (rowsFull) {
+    // Engin lína sprengd
+    case 0:
+      break;
+    // 1 lína sprengd
+    case 1:
+      this.score += (40 * this.level);
+      break;
+    // 2 línur sprengdar
+    case 2:
+      this.score += (100 * this.level);
+      break;
+    // 3 línur sprengdar
+    case 3:
+      this.score += (300 * this.level);
+      break;
+    // 4 eða fleiri línur sprengdar
+    default:
+      this.score += (1200 * this.level);
+      break;
+  }
+
+  console.log('this.score :>> ', this.score);
 }
 
 
