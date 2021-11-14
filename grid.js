@@ -89,9 +89,9 @@ Grid.prototype.setUpCanvas = function (ctx){
     this.drawBoard(ctx);
 }
 
-// Fallið virkar til að checka hvort raðir séu fullar
-// TODO - Taka röð út, lækka allt fyrir ofan um 1
 Grid.prototype.checkRows = function () {
+  // Halda utan um fullar raðir til að skila til baka í tetrisobject
+  let rowsFull = 0;
   for (let r = this.gridRows; r >= 0; r--) {
     let rowFull = true;
     for (let c = 0; c <= this.gridColumns; c++) {
@@ -101,9 +101,21 @@ Grid.prototype.checkRows = function () {
       }
     }
     if (rowFull) {
-      console.log('Röðin er full');
+      rowsFull += 1;
+      for (let c = 0; c <= this.gridColumns; c++) {
+        this.cells[c][r].status = 0;
+      }
+      for (let row = r-1; row >= 0; row--) {
+        for (let col = 0; col <= this.gridColumns; col++) {
+          if (this.cells[col][row].status === 1) {
+            this.cells[col][row].status = 0;    // Set status á þessum sem 0 til að lækka um eina röð
+            this.cells[col][row+1].status = 1;  // Set status á cell í röð fyrir neðan sem 1
+          }
+        }
+      }
     }
   }
+  return rowsFull;
 }
 
 

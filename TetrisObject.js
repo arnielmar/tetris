@@ -361,6 +361,22 @@ TetrisObject.prototype.reset = function (){
     let y = this.currentTetromino[r][1] + this.cy;
     g_grid.cells[x][y] = {status: 0}
   }
+  // Þurfum að gera eitthvað annað með lines og speed því það resettast þegar það kemur nýr tetromino
+  // Checka hvort það séu eitthverjar fullar raðir og bæti þeim við í this.lines
+  this.lines += g_grid.checkRows();
+  console.log('this.lines :>> ', this.lines);
+  // Checka hvort við séum að levela upp
+  if (this.lines >= 2) {
+    console.log('this.lines :>> ', this.lines);
+    this.lines = this.lines % 2;   // Lækka um 10 svo ég geti haldið utan um hvenær á að levela upp
+    this.level++;                   // Hækka level um 1
+    console.log('this.level :>> ', this.level);
+    // Lækka speed um 100 nema það sé nú þegar á hraðasta
+    if (this.speed > 100) {
+      this.speed -= 100;
+      console.log('this.speed :>> ', this.speed);
+    }
+  }
 }
 
 TetrisObject.prototype.killTetromino = function (){
@@ -381,9 +397,5 @@ TetrisObject.prototype.render = function (ctx) {
       sprite: this.currentTetroSprite
     }
   }
-
-  // Er núna að checka í hverju renderi sem er líklega óþarfi
-  // Betra að checka eitthversstaðar um leið og tetromino er orðinn fastur
-  g_grid.checkRows();
 
 };
