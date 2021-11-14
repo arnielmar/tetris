@@ -95,6 +95,46 @@ Grid.prototype.setUpCanvas = function (ctx){
     this.drawBoard(ctx);
 }
 
+Grid.prototype._checkLevelUp = function (rows) {
+  // Bæta línum við og athuga hvort level sé að breytast
+  this.lines += rows;
+  // Checka hvort við séum að levela upp
+  if (this.lines >= 10) {
+    this.lines = this.lines % 10;   // Lækka um 10 svo ég geti haldið utan um hvenær á að levela upp
+    this.level++;                   // Hækka level um 1
+    // Lækka speed um 100 nema það sé nú þegar á hraðasta
+    if (this.speed > 100) {
+      this.speed -= 100;
+    }
+  }
+}
+
+Grid.prototype._addScore = function (rows) {
+  // Virkar ekki alveg rétt því það er kallað svo oft á þetta að rowsFull er aldrei meira en 1
+  // Bæta við score (original Nintendo Tetris scoring system)
+  switch (rows) {
+    // Engin lína sprengd
+    case 0:
+      break;
+    // 1 lína sprengd
+    case 1:
+      this.score += (40 * this.level);
+      break;
+    // 2 línur sprengdar
+    case 2:
+      this.score += (100 * this.level);
+      break;
+    // 3 línur sprengdar
+    case 3:
+      this.score += (300 * this.level);
+      break;
+    // 4 eða fleiri línur sprengdar
+    default:
+      this.score += (1200 * this.level);
+      break;
+  }
+}
+
 Grid.prototype.checkRows = function () {
   // Halda utan um fullar raðir til að skila til baka í tetrisobject
   let rowsFull = 0;
@@ -122,43 +162,11 @@ Grid.prototype.checkRows = function () {
     }
   }
 
-  // Bæta línum við og athuga hvort level sé að breytast
-  this.lines += rowsFull;
-  // Checka hvort við séum að levela upp
-  if (this.lines >= 10) {
-    console.log('this.lines :>> ', this.lines);
-    this.lines = this.lines % 10;   // Lækka um 10 svo ég geti haldið utan um hvenær á að levela upp
-    this.level++;                   // Hækka level um 1
-    // Lækka speed um 100 nema það sé nú þegar á hraðasta
-    if (this.speed > 100) {
-      this.speed -= 100;
-    }
-  }
+  // Athuga hvort level up
+  this._checkLevelUp(rowsFull)
 
-  // Virkar ekki alveg rétt því það er kallað svo oft á þetta að rowsFull er aldrei meira en 1
-  // Bæta við score (original Nintendo Tetris scoring system)
-  switch (rowsFull) {
-    // Engin lína sprengd
-    case 0:
-      break;
-    // 1 lína sprengd
-    case 1:
-      this.score += (40 * this.level);
-      break;
-    // 2 línur sprengdar
-    case 2:
-      this.score += (100 * this.level);
-      break;
-    // 3 línur sprengdar
-    case 3:
-      this.score += (300 * this.level);
-      break;
-    // 4 eða fleiri línur sprengdar
-    default:
-      this.score += (1200 * this.level);
-      break;
-  }
-
+  // Bæta við score
+  this._addScore(rowsFull);
   console.log('this.score :>> ', this.score);
 }
 
