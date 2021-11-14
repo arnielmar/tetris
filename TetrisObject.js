@@ -74,11 +74,6 @@ TetrisObject.prototype.currNextTetromino;
 
 //TetrisObject.prototype.currentTetramino;
 
-// Lines, levels and speed
-TetrisObject.prototype.lines = 0;
-TetrisObject.prototype.level = 1;     // Level hækkar eftir hverjar 10 línur
-TetrisObject.prototype.speed = 1000;  // Lækka þetta eftir hverjar 10 línur
-
 //"Gravity"
 TetrisObject.prototype.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
 
@@ -163,7 +158,7 @@ TetrisObject.prototype.update = function (du) {
   this.dropRate -= du;
   if(this.dropRate<0 && this.cy + this._height < g_grid.gridRows+1){
     this.reset();
-    this.dropRate = this.speed / NOMINAL_UPDATE_INTERVAL;
+    this.dropRate = g_grid.speed / NOMINAL_UPDATE_INTERVAL;
     this.oneDown();
     //this.cy++;
 
@@ -361,22 +356,8 @@ TetrisObject.prototype.reset = function (){
     let y = this.currentTetromino[r][1] + this.cy;
     g_grid.cells[x][y] = {status: 0}
   }
-  // Þurfum að gera eitthvað annað með lines og speed því það resettast þegar það kemur nýr tetromino
-  // Checka hvort það séu eitthverjar fullar raðir og bæti þeim við í this.lines
-  this.lines += g_grid.checkRows();
-  console.log('this.lines :>> ', this.lines);
-  // Checka hvort við séum að levela upp
-  if (this.lines >= 2) {
-    console.log('this.lines :>> ', this.lines);
-    this.lines = this.lines % 2;   // Lækka um 10 svo ég geti haldið utan um hvenær á að levela upp
-    this.level++;                   // Hækka level um 1
-    console.log('this.level :>> ', this.level);
-    // Lækka speed um 100 nema það sé nú þegar á hraðasta
-    if (this.speed > 100) {
-      this.speed -= 100;
-      console.log('this.speed :>> ', this.speed);
-    }
-  }
+
+  g_grid.checkRows();
 }
 
 TetrisObject.prototype.killTetromino = function (){

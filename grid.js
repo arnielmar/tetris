@@ -30,6 +30,11 @@ Grid.prototype.cellHeight = 30;
 //Þetta er þá gridið okkar
 Grid.prototype.cells = [];
 
+// Heldur utan um línur sprengdar, level og hraða tetrominos
+Grid.prototype.lines = 0;
+Grid.prototype.level = 1;
+Grid.prototype.speed = 1000;
+
 Grid.prototype.generateGrid = function (){
     //createTetro();
     for(var c = 0; c <= this.gridColumns; c++){
@@ -115,7 +120,18 @@ Grid.prototype.checkRows = function () {
       }
     }
   }
-  return rowsFull;
+
+  this.lines += rowsFull;
+  // Checka hvort við séum að levela upp
+  if (this.lines >= 10) {
+    console.log('this.lines :>> ', this.lines);
+    this.lines = this.lines % 10;   // Lækka um 10 svo ég geti haldið utan um hvenær á að levela upp
+    this.level++;                   // Hækka level um 1
+    // Lækka speed um 100 nema það sé nú þegar á hraðasta
+    if (this.speed > 100) {
+      this.speed -= 100;
+    }
+  }
 }
 
 
