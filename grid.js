@@ -107,6 +107,9 @@ Grid.prototype._checkLevelUp = function (rows) {
       this.speed -= 100;
     }
   }
+
+  let levelElem = document.getElementById('level');
+  levelElem.innerHTML = this.level;
 }
 
 Grid.prototype._addScore = function (rows) {
@@ -133,6 +136,8 @@ Grid.prototype._addScore = function (rows) {
       this.score += (1200 * this.level);
       break;
   }
+  let scoreElem = document.getElementById('score');
+  scoreElem.innerHTML = this.score;
 }
 
 Grid.prototype.checkRows = function () {
@@ -161,6 +166,9 @@ Grid.prototype.checkRows = function () {
       }
     }
   }
+
+  let linesElem = document.getElementById('lines');
+  linesElem.innerHTML = this.lines;
 
   // Athuga hvort level up
   this._checkLevelUp(rowsFull)

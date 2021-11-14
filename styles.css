@@ -1,8 +1,26 @@
 
 body {
-    text-align: center;
-    background: #fff;
+  text-align: center;
+  background: #fff;
 }
+
+.info {
+  display: flex;
+  justify-content: center;
+}
+
+.level {
+  margin: 0 20px;
+}
+
+.lines {
+  margin: 0 20px;
+}
+
+.score {
+  margin: 0 20px;
+}
+
 #myCanvas {
     background: #fff;
     margin-left: 10px;
