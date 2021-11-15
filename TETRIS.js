@@ -15,7 +15,7 @@ var g_ctx = g_canvas.getContext("2d");
 */
 
 // ======================
-// UGLY GLOBAL
+// UGLY GLOBALS
 // ======================
 const g_grid = new Grid({
   gridWidth: Math.floor(g_canvas.width / 2),
@@ -23,6 +23,9 @@ const g_grid = new Grid({
   cx: Math.floor(g_canvas.width / 4),
   cy: Math.floor(g_canvas.height / 2)
 })
+
+var GET_NEXT_TETROMINO = false;
+var SWITH_HOLDING_TETREMINOS = false;
 
 // ======================
 // CREATE INITIAL OBJECTS
@@ -35,7 +38,9 @@ function createInitialObjects() {
 
 	//Testa að búa til einn í byrjun
 	//entityManager.generateObject({})
-	createTetro();
+	createTetro(0);
+  createTetro(1);
+  createTetro(2);
 }
 
 // =============
@@ -105,7 +110,6 @@ function processDiagnostics() {
 
 function renderSimulation(ctx) {
 
-	drawText(ctx);
 	g_grid.drawBoard(g_ctx);
 	entityManager.render(ctx);
 

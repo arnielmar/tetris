@@ -49,7 +49,7 @@ TetrisObject.prototype.KEY_RIGHT = 'D'.charCodeAt(0);  // Færa kall til hægri
 
 TetrisObject.prototype.KEY_SWITCH = 'C'.charCodeAt(0);  // Geyma kall
 
-TetrisObject.prototype.KEY_SWITCH = 'SPACE'.charCodeAt(0); //Ekki viss hvort þetta sé rétt fyrir space takkan, færa hlutinn neðst á gridinu
+TetrisObject.prototype.KEY_DROP = 'SPACE'.charCodeAt(0); //Ekki viss hvort þetta sé rétt fyrir space takkan, færa hlutinn neðst á gridinu
 
 // Initial, inheritable, default values
 TetrisObject.prototype.rotation = 0;
@@ -68,9 +68,8 @@ TetrisObject.prototype.currentTetromino;
 TetrisObject.prototype._width = 0;
 TetrisObject.prototype._height = 0;
 
-//next tetramino
-TetrisObject.prototype.nextTetromino;
-TetrisObject.prototype.currNextTetromino;
+//My state, current = 0, next = 1, being held = 2
+TetrisObject.prototype.myState = -1;
 
 //TetrisObject.prototype.currentTetramino;
 
@@ -86,6 +85,23 @@ TetrisObject.prototype.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
 
 
 TetrisObject.prototype.update = function (du) {
+
+  // if im not the currently played tetromino then dont do anything
+  if (this.myState === 1 && GET_NEXT_TETROMINO) {
+    // clean
+    this.myState = 0;
+    GET_NEXT_TETROMINO = false;
+    debugger;
+  }
+
+  if (this.myState === 2 && SWITH_HOLDING_TETREMINOS) {
+    // clean
+    this.myState = 0;
+    SWITH_HOLDING_TETREMINOS = false;
+    debugger;
+  }
+
+  if (this.myState !== 0) return;   // something wrong
 
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,6 +164,14 @@ TetrisObject.prototype.update = function (du) {
 
   }
 
+  if (eatKey(this.KEY_SWITCH)) {
+    this.reset();
+    this.myState = 2;
+    SWITH_HOLDING_TETREMINOS = true;
+    this.backToStart();
+    return;
+  }
+
 
   for(let r = 0; r<this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
@@ -177,7 +201,6 @@ TetrisObject.prototype.update = function (du) {
   }
 };
 
-
 TetrisObject.prototype.calcWidthNHeight = function() {
   var wLargestX = 0;
   var hLargestX = 0;
@@ -200,7 +223,6 @@ TetrisObject.prototype.calcWidthNHeight = function() {
   this._height = hLargestX;
 
 }
-
 
 TetrisObject.prototype.oneDown = function () {
   if((this.cy + this._height < g_grid.gridRows)){
@@ -232,10 +254,10 @@ TetrisObject.prototype.spawnNew = function (){
 
   // if player is still playing make new tertremino
   if (!g_grid.lost) {
-    createTetro();
+    createTetro(1);
+    GET_NEXT_TETROMINO = true;
   }
 }
-
 
 TetrisObject.prototype.oneRight = function () {
   if(((this.cx + this._width) < g_grid.gridColumns) && (!this.objectCollisionRight())){
@@ -250,6 +272,7 @@ TetrisObject.prototype.oneLeft = function () {
 
   }
 }
+
 TetrisObject.prototype.objectCollisionDown= function (){
   //Þessi kóði virkar
   let tetrominoCopy = this.currentTetromino;
@@ -263,7 +286,6 @@ TetrisObject.prototype.objectCollisionDown= function (){
   }
   return false;
 }
-
 
 TetrisObject.prototype.objectCollisionRight = function(){
 
@@ -314,7 +336,6 @@ TetrisObject.prototype.rotate = function(){
   return false;
 }
 
-
 TetrisObject.prototype.rotateCollision = function(){
   var tetromino = this.tetromino;
   var tetrominoCopy = this.currentTetromino;
@@ -336,6 +357,12 @@ TetrisObject.prototype.rotateCollision = function(){
   return false;
 }
 
+TetrisObject.prototype.backToStart = function() {
+
+  this.cx = this.reset_cx;
+  this.cy = this.reset_cy;
+
+}
 
 TetrisObject.prototype.reset = function (){
   for(let r = 0; r < this.currentTetromino.length; r++){
@@ -360,16 +387,43 @@ TetrisObject.prototype.killTetromino = function (){
 
 TetrisObject.prototype.render = function (ctx) {
 
-  /*
+  const gridRight = g_grid.cx + g_grid.gridWidth/2;
+  const gridTop = g_grid.cy - g_grid.gridHeight/2;
+  const gridMidVertical = g_grid.cy;
 
-  for(let r = 0; r<this.currentTetromino.length; r++){
-    let x = this.currentTetromino[r][0] + this.cx;
-    let y = this.currentTetromino[r][1] + this.cy;
-    g_grid.cells[x][y] = {
-      status: 1,
-      sprite: this.currentTetroSprite
+  const cellW = g_grid.cellWidth;
+  const cellH = g_grid.cellHeight;
+  const cellP = g_grid.cellPadding;
+
+  const tetro = this.currentTetromino;
+
+  // render me as the next teromino
+  if (this.myState === 1) {
+
+    ctx.font = "30px Arial";
+    ctx.fillText("Next:", gridRight + 50, gridTop + 50);
+
+
+    for(let r = 0; r < tetro.length; r++){
+      let x = gridRight + 50 + (tetro[r][0] * cellW + tetro[r][0] * cellP);
+      let y = gridTop + 75 + (tetro[r][1] * cellH + tetro[r][1] * cellP);
+
+      this.currentTetroSprite.drawAt(ctx, x, y);
     }
   }
-  */
+
+  //render me as the held teromino
+  if (this.myState === 2) {
+
+    ctx.font = "30px Arial";
+    ctx.fillText("Holding:", gridRight + 50, gridMidVertical + 50);
+
+    for(let r = 0; r < tetro.length; r++){
+      let x = gridRight + 50 + (tetro[r][0] * cellW + tetro[r][0] * cellP);
+      let y = gridMidVertical + 75 + (tetro[r][1] * cellH + tetro[r][1] * cellP);
+
+      this.currentTetroSprite.drawAt(ctx, x, y);
+    }
+  }
 
 };
