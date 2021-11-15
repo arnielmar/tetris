@@ -40,7 +40,6 @@ function createInitialObjects() {
 	//entityManager.generateObject({})
 	createTetro(0);
   createTetro(1);
-  createTetro(2);
 }
 
 // =============

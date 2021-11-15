@@ -88,23 +88,21 @@ TetrisObject.prototype.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
 
 TetrisObject.prototype.update = function (du) {
 
-  // if im not the currently played tetromino then dont do anything
   if (this.myState === 1 && GET_NEXT_TETROMINO) {
     // clean
-    this.myState = 0;
     GET_NEXT_TETROMINO = false;
-    debugger;
+    this.myState = 0;
   }
 
   if (this.myState === 2 && SWITH_HOLDING_TETREMINOS) {
     // clean
     this.myState = 0;
     SWITH_HOLDING_TETREMINOS = false;
-    debugger;
   }
 
-  if (this.myState !== 0) return;   // something wrong
+  if (this.myState !== 0) return;
 
+  this.reRender();
 
   /////////////////////////////////////////////////////////////////////////////////////////////
   // EDGE COLLISIONS
@@ -132,7 +130,7 @@ TetrisObject.prototype.update = function (du) {
   /////////////////////////////////////////////////////////////////////////////////////////////
   // EDGE COLLISIONS
   /////////////////////////////////////////////////////////////////////////////////////////////
-  
+
   if (eatKey(this.KEY_SWITCH)) {
     this.reset();
     this.myState = 2;
@@ -140,7 +138,7 @@ TetrisObject.prototype.update = function (du) {
     this.backToStart();
     return;
   }
-  
+
   if(eatKey(this.KEY_ROTATE)){
     if(!this.rotate() && !this.rotateDown()) {
       //Ef það er ekkert hliðar collision þá gerist ekkert
@@ -159,7 +157,7 @@ TetrisObject.prototype.update = function (du) {
 
       rotatedN = (rotatedN+1)%rotatedTetromino.length;
       currentRotatedTetromino = rotatedTetromino[rotatedN];
-      
+
       //Width á nýja kubbinum sem er búið að rotate-a
       var newWidth = this.calcNewWidth(currentRotatedTetromino);
       this.cx = g_grid.gridColumns-newWidth;
@@ -179,9 +177,9 @@ TetrisObject.prototype.update = function (du) {
 
 
     }
-    
-    
-    
+
+
+
     if(!this.rotateCollision()){
       //Rotate-a hlutnum ef það er ekki collision við annað object
       this.reset()
@@ -207,16 +205,19 @@ TetrisObject.prototype.update = function (du) {
 
 
 TetrisObject.prototype.reRender = function () {
-  for(let r = 0; r<this.currentTetromino.length; r++){
-    let x = this.currentTetromino[r][0] + this.cx;
-    let y = this.currentTetromino[r][1] + this.cy;
-    if(g_grid.cells[x][y].status !==2){
-      g_grid.cells[x][y] = {
-        status: 1,
-        sprite: this.currentTetroSprite
+  if (this.myState === 0) {
+    for(let r = 0; r<this.currentTetromino.length; r++){
+      let x = this.currentTetromino[r][0] + this.cx;
+      let y = this.currentTetromino[r][1] + this.cy;
+      if(g_grid.cells[x][y].status !==2){
+        g_grid.cells[x][y] = {
+          status: 1,
+          sprite: this.currentTetroSprite
+        }
       }
     }
   }
+
 }
 
 
@@ -314,10 +315,10 @@ TetrisObject.prototype.spawnNew = function (){
 
   // if player is still playing make new tertremino
   if (!g_grid.lost) {
+    g_grid.checkRows();
 
     createTetro(1);
     GET_NEXT_TETROMINO = true;
-    g_grid.checkRows();
   }
 }
 
