@@ -36,7 +36,6 @@ function createTetro(state = -1) {
                                 currentTetroSprite: curTetrominoSprite,
                                 myState: state
                               });
-
 }
 
 function createNextTetro(){
