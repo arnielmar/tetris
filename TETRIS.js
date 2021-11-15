@@ -26,6 +26,7 @@ const g_grid = new Grid({
 
 var GET_NEXT_TETROMINO = false;
 var SWITH_HOLDING_TETREMINOS = false;
+var CURRENT_COORDINATES = [0,4];
 
 // ======================
 // CREATE INITIAL OBJECTS
@@ -39,7 +40,8 @@ function createInitialObjects() {
 	//Testa að búa til einn í byrjun
 	//entityManager.generateObject({})
 	createTetro(0);
-  createTetro(1);
+  createTetro(1, null, true);
+  createTetro(2);
 }
 
 // =============

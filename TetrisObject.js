@@ -89,15 +89,40 @@ TetrisObject.prototype.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
 TetrisObject.prototype.update = function (du) {
 
   if (this.myState === 1 && GET_NEXT_TETROMINO) {
+    debugger;
     // clean
-    GET_NEXT_TETROMINO = false;
-    this.myState = 0;
+
+    if (!this.old) {
+      this.old = true;
+    } else {
+      GET_NEXT_TETROMINO = false;
+      this.myState = 0;
+    }
   }
 
-  if (this.myState === 2 && SWITH_HOLDING_TETREMINOS) {
-    // clean
-    this.myState = 0;
-    SWITH_HOLDING_TETREMINOS = false;
+  if (SWITH_HOLDING_TETREMINOS) {
+    debugger;
+    if (this.myState === 2) {
+      if (!this.tetromino) {
+        createTetro(1, null, false);
+        GET_NEXT_TETROMINO = true;
+        this.kill();
+        SWITH_HOLDING_TETREMINOS = false;
+        return entityManager.KILL_ME_NOW;
+      } else {
+        this.myState = 0;
+        this.cx = CURRENT_COORDINATES[0];
+        this.cy = CURRENT_COORDINATES[1];
+        SWITH_HOLDING_TETREMINOS = false;
+      }
+    }
+    // if (this.myState === 0) {
+    //   // this.reset();
+    //   this.cx = CURRENT_COORDINATES[0];
+    //   this.cy = CURRENT_COORDINATES[1];
+    //   SWITH_HOLDING_TETREMINOS = false;
+    // }
+
   }
 
   if (this.myState !== 0) return;
@@ -135,6 +160,7 @@ TetrisObject.prototype.update = function (du) {
     this.reset();
     this.myState = 2;
     SWITH_HOLDING_TETREMINOS = true;
+    CURRENT_COORDINATES = [this.cx, this.cy];
     this.backToStart();
     return;
   }
@@ -205,7 +231,6 @@ TetrisObject.prototype.update = function (du) {
 
 
 TetrisObject.prototype.reRender = function () {
-  debugger;
   if (this.myState === 0) {
     for(let r = 0; r<this.currentTetromino.length; r++){
       let x = this.currentTetromino[r][0] + this.cx;
@@ -318,7 +343,7 @@ TetrisObject.prototype.spawnNew = function (){
   if (!g_grid.lost) {
     g_grid.checkRows();
 
-    createTetro(1);
+    createTetro(1, null, false);
     GET_NEXT_TETROMINO = true;
   }
 }
@@ -499,12 +524,13 @@ TetrisObject.prototype.render = function (ctx) {
 
     ctx.font = "30px Arial";
     ctx.fillText("Holding:", gridRight + 50, gridMidVertical + 50);
+    if (tetro) {
+      for(let r = 0; r < tetro.length; r++){
+        let x = gridRight + 50 + (tetro[r][0] * cellW + tetro[r][0] * cellP);
+        let y = gridMidVertical + 75 + (tetro[r][1] * cellH + tetro[r][1] * cellP);
 
-    for(let r = 0; r < tetro.length; r++){
-      let x = gridRight + 50 + (tetro[r][0] * cellW + tetro[r][0] * cellP);
-      let y = gridMidVertical + 75 + (tetro[r][1] * cellH + tetro[r][1] * cellP);
-
-      this.currentTetroSprite.drawAt(ctx, x, y);
+        this.currentTetroSprite.drawAt(ctx, x, y);
+      }
     }
   }
 

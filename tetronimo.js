@@ -7,7 +7,7 @@ let tetrominoRotations = 0;
 //og svo createNextTetromino
 
 // give state to say what kind of tetromino
-function createTetro(state = -1) {
+function createTetro(state = -1, coords=null, old=null) {
   // Þurfti að færa fylkið hingað til að hafa það ekki global svo g_sprites hlutirnir væru ekki undefined
   // Skilgreina öll pieces
   const TETROMINOS = [
@@ -30,12 +30,42 @@ function createTetro(state = -1) {
   var nextTetromino = TETROMINOS[rNext][0];
   var nextColor = TETROMINOS[rNext][1];
 
-  entityManager.generateObject({tetromino: tetromino,
-                                tetrominoN: 0,
-                                currentTetromino: tetromino[0],
-                                currentTetroSprite: curTetrominoSprite,
-                                myState: state
-                              });
+  // debugger;
+
+  // making a holding tetromino is only done in the begining
+  if (state === 2) {
+    entityManager.generateObject({
+      tetromino: null,
+      tetrominoN: 0,
+      currentTetromino: [],
+      currentTetroSprite: null,
+      myState: state
+    });
+  }
+
+  if (state === 1) {
+    entityManager.generateObject({
+      tetromino: tetromino,
+      tetrominoN: 0,
+      currentTetromino: tetromino[0],
+      currentTetroSprite: curTetrominoSprite,
+      myState: state,
+      old: old
+    });
+  }
+
+  if (state === 0) {
+    entityManager.generateObject({
+      tetromino: tetromino,
+      tetrominoN: 0,
+      currentTetromino: tetromino[0],
+      currentTetroSprite: curTetrominoSprite,
+      myState: state
+    });
+  }
+
+
+
 }
 
 function createNextTetro(){
