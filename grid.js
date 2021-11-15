@@ -164,8 +164,8 @@ Grid.prototype._checkLevelUp = function (rows) {
   // Bæta línum við og athuga hvort level sé að breytast
   this.lines += rows;
   // Checka hvort við séum að levela upp
-  if (this.lines >= 10) {
-    this.lines = this.lines % 10;   // Lækka um 10 svo ég geti haldið utan um hvenær á að levela upp
+  if (this.lines >= 10 * this.level) {
+    //this.lines = this.lines % 10;   // Lækka um 10 svo ég geti haldið utan um hvenær á að levela upp
     this.level++;                   // Hækka level um 1
     // Lækka speed um 100 nema það sé nú þegar á hraðasta
     if (this.speed > 100) {
@@ -173,7 +173,8 @@ Grid.prototype._checkLevelUp = function (rows) {
     }
   }
 
-
+  let linesElem = document.getElementById('lines');
+  linesElem.innerHTML = this.lines;
   let levelElem = document.getElementById('level');
   levelElem.innerHTML = this.level;
 }
@@ -235,13 +236,9 @@ Grid.prototype.checkRows = function () {
     }
   }
 
-  let linesElem = document.getElementById('lines');
-  linesElem.innerHTML = this.lines;
-
   // Athuga hvort level up
   this._checkLevelUp(rowsFull)
 
   // Bæta við score
   this._addScore(rowsFull);
-  console.log('this.score :>> ', this.score);
 }
