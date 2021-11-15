@@ -12,6 +12,12 @@ function Grid(descr) {
   this.cellHeight = Math.floor(this.gridHeight / (this.gridRows + 1)) - this.cellPadding;
 }
 
+// ef leikmaður er búinn að tapa
+Grid.prototype.lost = false;
+Grid.prototype.lostAnimationToggle = false;
+Grid.prototype.lostAnimationDone = false;
+
+
 // stærðar breytur
 Grid.prototype.gridRows = 20;
 Grid.prototype.gridColumns = 10;
@@ -60,22 +66,81 @@ Grid.prototype.resetGrid = function (){
 }
 
 Grid.prototype.drawBoard = function (ctx){
-    //Búum til einn tetro
-    // debugger;
+  //Búum til einn tetro
+
     for(var c = 0; c <= this.gridColumns; c++){
         for(var r= 0; r <= this.gridRows; r++){
             var cellX = this.cx - (this.gridWidth / 2) + c * (this.cellWidth + this.cellPadding);
             var cellY = this.cy - (this.gridHeight / 2) + r * (this.cellHeight + this.cellPadding) + this.cellPadding;
+            if (this.lost && !this.lostAnimationToggle) {
+              // util.fillBox(ctx, cellX, cellY, this.cellWidth, this.cellHeight, "blue");
 
-            if(this.cells[c][r].status === 0){
-                g_sprites.empty.drawAt(ctx, cellX, cellY);
-            }else{
-                // Teikna sprite á þessu cell
+              if (this.cells[c][r].status === 3) {
                 this.cells[c][r].sprite.drawAt(ctx, cellX, cellY);
+              }
+
+
+              if (this.cells[c][r].status !== 3) {
+                this.lostAnimationToggle = true;
+
+                var keys = Object.keys(g_sprites);
+
+                const index = keys.indexOf("empty");
+                if (index > -1) {
+                  keys.splice(index, 1);
+                }
+
+                const theSprite = g_sprites[keys[Math.floor(Math.random()*keys.length)]];
+
+                this.cells[c][r] = {status: 3, sprite: theSprite};
+              }
+
+              if (c === this.gridColumns && r === this.gridRows) {
+                this.lostAnimationDone = true;
+              }
+            } else {
+              if(this.cells[c][r].status === 0){
+                  g_sprites.empty.drawAt(ctx, cellX, cellY);
+              }else{
+                  // Teikna sprite á þessu cell
+                  this.cells[c][r].sprite.drawAt(ctx, cellX, cellY);
+              }
+              //Annars er þetta partur af tetramino
             }
-            //Annars er þetta partur af tetramino
         }
     }
+
+    // reset this param for next iteration
+    this.lostAnimationToggle = false;
+
+    if (this.lostAnimationDone) {
+      // this.resetGrid();
+      this.drawFinalScore(ctx);
+    }
+
+}
+
+Grid.prototype.drawFinalScore = function (ctx) {
+
+
+  const startX = this.cx - this.gridWidth*3/8;
+  const startY = this.cy - this.gridHeight*2/8;
+  const myWidth = 6/8*this.gridWidth;
+  const myHeight = 4/8*this.gridHeight;
+
+  util.fillBox(ctx, startX, startY, myWidth, myHeight, "black");
+
+  ctx.save();
+
+  ctx.font = '32px serif';
+  ctx.textAlign = "center";
+  ctx.fillText('Final score', startX + myWidth/2, startY + myHeight/8);
+
+  ctx.font = '48px serif';
+  ctx.fillText(`${this.score}`, startX + myWidth/2, startY + myHeight/2);
+
+  ctx.restore();
+
 }
 
 
@@ -92,7 +157,7 @@ Grid.prototype.occupy - function (x, y, colorcode) {
 
 Grid.prototype.setUpCanvas = function (ctx){
     this.generateGrid();
-    this.drawBoard(ctx);
+    // this.drawBoard(ctx);
 }
 
 Grid.prototype._checkLevelUp = function (rows) {
@@ -147,73 +212,6 @@ Grid.prototype.checkRows = function () {
   for (let r = this.gridRows; r >= 0; r--) {
     let rowFull = true;
     for (let c = 0; c <= this.gridColumns; c++) {
-      if (this.cells[c][r].status !== 1) {
-        rowFull = false;
-        break;
-      }
-    }
-    if (rowFull) {
-      rowsFull += 1;
-      for (let c = 0; c <= this.gridColumns; c++) {
-        this.cells[c][r].status = 0;
-      }
-      for (let row = r-1; row >= 0; row--) {
-        for (let col = 0; col <= this.gridColumns; col++) {
-          if (this.cells[col][row].status === 1) {
-            this.cells[col][row].status = 0;    // Set status á þessum sem 0 til að lækka um eina röð
-            this.cells[col][row+1].status = 1;  // Set status á cell í röð fyrir neðan sem 1
-          }
-        }
-      }
-    }
-  }
-
-  let linesElem = document.getElementById('lines');
-  linesElem.innerHTML = this.lines;
-
-  // Athuga hvort level up
-  this._checkLevelUp(rowsFull)
-
-  // Bæta við score
-  this._addScore(rowsFull);
-  console.log('this.score :>> ', this.score);
-
-}
-
-Grid.prototype._addScore = function (rows) {
-  // Virkar ekki alveg rétt því það er kallað svo oft á þetta að rowsFull er aldrei meira en 1
-  // Bæta við score (original Nintendo Tetris scoring system)
-  switch (rows) {
-    // Engin lína sprengd
-    case 0:
-      break;
-    // 1 lína sprengd
-    case 1:
-      this.score += (40 * this.level);
-      break;
-    // 2 línur sprengdar
-    case 2:
-      this.score += (100 * this.level);
-      break;
-    // 3 línur sprengdar
-    case 3:
-      this.score += (300 * this.level);
-      break;
-    // 4 eða fleiri línur sprengdar
-    default:
-      this.score += (1200 * this.level);
-      break;
-  }
-  let scoreElem = document.getElementById('score');
-  scoreElem.innerHTML = this.score;
-}
-
-Grid.prototype.checkRows = function () {
-  // Halda utan um fullar raðir til að skila til baka í tetrisobject
-  let rowsFull = 0;
-  for (let r = this.gridRows; r >= 0; r--) {
-    let rowFull = true;
-    for (let c = 0; c <= this.gridColumns; c++) {
       if (this.cells[c][r].status !== 2) {
         rowFull = false;
         break;
@@ -228,10 +226,12 @@ Grid.prototype.checkRows = function () {
         for (let col = 0; col <= this.gridColumns; col++) {
           if (this.cells[col][row].status === 2) {
             this.cells[col][row].status = 0;    // Set status á þessum sem 0 til að lækka um eina röð
-            this.cells[col][row+1].status = 2;  // Set status á cell í röð fyrir neðan sem 1
+            this.cells[col][row+1].status = 2;  // Set status á cell í röð fyrir neðan sem 2
+            this.cells[col][row+1].sprite = this.cells[col][row].sprite;  // Set status á cell í röð fyrir neðan sem 2
           }
         }
       }
+      r++;
     }
   }
 
