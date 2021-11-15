@@ -116,7 +116,7 @@ TetrisObject.prototype.update = function (du) {
   /////////////////////////////////////////////////////////////////////////////////////////////
 
   if(eatKey(this.KEY_ROTATE)){
-    
+
     if(!this.rotate() && !this.rotateCollision()){
       this.reset();
       this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
@@ -217,10 +217,23 @@ TetrisObject.prototype.oneDown = function () {
 }
 
 TetrisObject.prototype.spawnNew = function (){
+  // kill the current tertremino
   this.killTetromino();
   this.kill();
-  createTetro();
-  //g_grid.checkRows();
+// debugger;
+  // has the player lost
+  // if any tetremino is stuck in the top most line, then "loss" else "still playing"
+
+  if (this.cy === 0) {
+    //player lost
+    g_grid.lost = true;
+  }
+
+
+  // if player is still playing make new tertremino
+  if (!g_grid.lost) {
+    createTetro();
+  }
 }
 
 
@@ -233,12 +246,11 @@ TetrisObject.prototype.oneRight = function () {
 TetrisObject.prototype.oneLeft = function () {
   if(this.cx > 0 && !this.objectCollisionLeft()){
     this.reset();
-    this.cx-=1; 
+    this.cx-=1;
 
   }
 }
 TetrisObject.prototype.objectCollisionDown= function (){
-
   //Þessi kóði virkar
   let tetrominoCopy = this.currentTetromino;
   for(let i =0; i<tetrominoCopy.length;i++){
@@ -278,7 +290,7 @@ TetrisObject.prototype.objectCollisionLeft = function (){
     }
   }
 
-  return false;  
+  return false;
 
 }
 

@@ -12,6 +12,12 @@ function Grid(descr) {
   this.cellHeight = Math.floor(this.gridHeight / (this.gridRows + 1)) - this.cellPadding;
 }
 
+// ef leikmaður er búinn að tapa
+Grid.prototype.lost = false;
+Grid.prototype.lostAnimationToggle = false;
+Grid.prototype.lostAnimationDone = false;
+
+
 // stærðar breytur
 Grid.prototype.gridRows = 20;
 Grid.prototype.gridColumns = 10;
@@ -60,22 +66,81 @@ Grid.prototype.resetGrid = function (){
 }
 
 Grid.prototype.drawBoard = function (ctx){
-    //Búum til einn tetro
-    // debugger;
+  //Búum til einn tetro
+
     for(var c = 0; c <= this.gridColumns; c++){
         for(var r= 0; r <= this.gridRows; r++){
             var cellX = this.cx - (this.gridWidth / 2) + c * (this.cellWidth + this.cellPadding);
             var cellY = this.cy - (this.gridHeight / 2) + r * (this.cellHeight + this.cellPadding) + this.cellPadding;
+            if (this.lost && !this.lostAnimationToggle) {
+              // util.fillBox(ctx, cellX, cellY, this.cellWidth, this.cellHeight, "blue");
 
-            if(this.cells[c][r].status === 0){
-                g_sprites.empty.drawAt(ctx, cellX, cellY);
-            }else{
-                // Teikna sprite á þessu cell
+              if (this.cells[c][r].status === 2) {
                 this.cells[c][r].sprite.drawAt(ctx, cellX, cellY);
+              }
+
+
+              if (this.cells[c][r].status !== 2) {
+                this.lostAnimationToggle = true;
+
+                var keys = Object.keys(g_sprites);
+
+                const index = keys.indexOf("empty");
+                if (index > -1) {
+                  keys.splice(index, 1);
+                }
+
+                const theSprite = g_sprites[keys[Math.floor(Math.random()*keys.length)]];
+
+                this.cells[c][r] = {status: 2, sprite: theSprite};
+              }
+
+              if (c === this.gridColumns && r === this.gridRows) {
+                this.lostAnimationDone = true;
+              }
+            } else {
+              if(this.cells[c][r].status === 0){
+                  g_sprites.empty.drawAt(ctx, cellX, cellY);
+              }else{
+                  // Teikna sprite á þessu cell
+                  this.cells[c][r].sprite.drawAt(ctx, cellX, cellY);
+              }
+              //Annars er þetta partur af tetramino
             }
-            //Annars er þetta partur af tetramino
         }
     }
+
+    // reset this param for next iteration
+    this.lostAnimationToggle = false;
+
+    if (this.lostAnimationDone) {
+      // this.resetGrid();
+      this.drawFinalScore(ctx);
+    }
+
+}
+
+Grid.prototype.drawFinalScore = function (ctx) {
+
+
+  const startX = this.cx - this.gridWidth*3/8;
+  const startY = this.cy - this.gridHeight*2/8;
+  const myWidth = 6/8*this.gridWidth;
+  const myHeight = 4/8*this.gridHeight;
+
+  util.fillBox(ctx, startX, startY, myWidth, myHeight, "black");
+
+  ctx.save();
+
+  ctx.font = '32px serif';
+  ctx.textAlign = "center";
+  ctx.fillText('Final score', startX + myWidth/2, startY + myHeight/8);
+
+  ctx.font = '48px serif';
+  ctx.fillText(`${"XXX"}`, startX + myWidth/2, startY + myHeight/2);
+
+  ctx.restore();
+
 }
 
 
@@ -92,7 +157,7 @@ Grid.prototype.occupy - function (x, y, colorcode) {
 
 Grid.prototype.setUpCanvas = function (ctx){
     this.generateGrid();
-    this.drawBoard(ctx);
+    // this.drawBoard(ctx);
 }
 
 Grid.prototype._checkLevelUp = function (rows) {
