@@ -226,10 +226,12 @@ Grid.prototype.checkRows = function () {
         for (let col = 0; col <= this.gridColumns; col++) {
           if (this.cells[col][row].status === 2) {
             this.cells[col][row].status = 0;    // Set status á þessum sem 0 til að lækka um eina röð
-            this.cells[col][row+1].status = 2;  // Set status á cell í röð fyrir neðan sem 1
+            this.cells[col][row+1].status = 2;  // Set status á cell í röð fyrir neðan sem 2
+            this.cells[col][row+1].sprite = this.cells[col][row].sprite;  // Set status á cell í röð fyrir neðan sem 2
           }
         }
       }
+      r++;
     }
   }
 

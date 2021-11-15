@@ -27,6 +27,8 @@ function TetrisObject(descr) {
 
   // Set normal drawing scale, and warp state off
   this._scale = 1;
+
+  this.reRender();
 };
 
 
@@ -148,7 +150,7 @@ TetrisObject.prototype.update = function (du) {
 
   }
 
-
+/*
   for(let r = 0; r<this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
     let y = this.currentTetromino[r][1] + this.cy;
@@ -159,7 +161,7 @@ TetrisObject.prototype.update = function (du) {
       }
     }
   }
-
+*/
 
 
   spatialManager.unregister(this);
@@ -176,6 +178,19 @@ TetrisObject.prototype.update = function (du) {
     this.oneDown();
   }
 };
+
+TetrisObject.prototype.reRender = function () {
+  for(let r = 0; r<this.currentTetromino.length; r++){
+    let x = this.currentTetromino[r][0] + this.cx;
+    let y = this.currentTetromino[r][1] + this.cy;
+    if(g_grid.cells[x][y].status !==2){
+      g_grid.cells[x][y] = {
+        status: 1,
+        sprite: this.currentTetroSprite
+      }
+    }
+  }
+}
 
 
 TetrisObject.prototype.calcWidthNHeight = function() {
@@ -206,6 +221,7 @@ TetrisObject.prototype.oneDown = function () {
   if((this.cy + this._height < g_grid.gridRows)){
       if(!this.objectCollisionDown()){
         this.cy+=1;
+        this.reRender();
       }else{
         this.spawnNew();
       }
@@ -233,6 +249,7 @@ TetrisObject.prototype.spawnNew = function (){
   // if player is still playing make new tertremino
   if (!g_grid.lost) {
     createTetro();
+    g_grid.checkRows();
   }
 }
 
@@ -241,14 +258,14 @@ TetrisObject.prototype.oneRight = function () {
   if(((this.cx + this._width) < g_grid.gridColumns) && (!this.objectCollisionRight())){
       this.cx+=1;
   }
+  this.reRender();
 }
 
 TetrisObject.prototype.oneLeft = function () {
   if(this.cx > 0 && !this.objectCollisionLeft()){
-    this.reset();
     this.cx-=1;
-
   }
+  this.reRender();
 }
 TetrisObject.prototype.objectCollisionDown= function (){
   //Þessi kóði virkar
@@ -301,7 +318,7 @@ TetrisObject.prototype.rotate = function(){
   //Rotate-um þessum gervi hlut
   tetrominoNCopy = (tetrominoNCopy + 1)%tetromino.length;
   tetrominoCopy =  tetromino[tetrominoNCopy];
-
+  this.reRender();
   for(var i = 0; i<tetrominoCopy.length; i++){
     var square = tetrominoCopy[i];
     var x = square[0]+this.cx;
@@ -343,8 +360,6 @@ TetrisObject.prototype.reset = function (){
     let y = this.currentTetromino[r][1] + this.cy;
     g_grid.cells[x][y] = {status: 0}
   }
-
-  g_grid.checkRows();
 }
 
 TetrisObject.prototype.killTetromino = function (){

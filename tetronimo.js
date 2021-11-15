@@ -36,11 +36,10 @@ function createTetro() {
                                 nextTetromino: nextTetrominoTEST,
                                 currNextTetromino: nextTetrominoTEST[0]
                               });
-
 }
 
 function createNextTetro(){
-  
+
   //Ferlið er þá að í upphafi eru búnir til tveir hlutir
   //þegar tetro hlutur er drepinn þá er núverandi tetro settur sem nextTetro
   // eitthvað í þessa áttina tetromino=nextTetromino
