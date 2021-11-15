@@ -75,7 +75,7 @@ TetrisObject.prototype.currNextTetromino;
 //TetrisObject.prototype.currentTetramino;
 
 //"Gravity"
-TetrisObject.prototype.dropRate= 1000 / NOMINAL_UPDATE_INTERVAL;
+TetrisObject.prototype.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
 
 
 
@@ -142,7 +142,7 @@ TetrisObject.prototype.update = function (du) {
     this.calcWidthNHeight();
 
     //let nextPatter = this.tetromino[(this.tetrominoN+1)%this.tetromino.length]
-  
+
 
     // þarf að passa að það brotni ekkert þegar kubbur snýst.
 
@@ -167,12 +167,12 @@ TetrisObject.prototype.update = function (du) {
     return entityManager.KILL_ME_NOW;
   }
 
-  
+
 
   this.dropRate -= du;
   if(this.dropRate<0 && this.cy + this._height < g_grid.gridRows+1){
     this.reset();
-    this.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
+    this.dropRate = g_grid.speed / NOMINAL_UPDATE_INTERVAL;
     this.oneDown();
   }
 };
@@ -208,9 +208,11 @@ TetrisObject.prototype.oneDown = function () {
         this.cy+=1;
       }else{
         this.spawnNew();
-      }  
+      }
   }else{
+
     this.spawnNew();
+
   }
 }
 
@@ -232,11 +234,12 @@ TetrisObject.prototype.oneLeft = function () {
   if(this.cx > 0 && !this.objectCollisionLeft()){
     this.reset();
     this.cx-=1; 
+
   }
 }
-
 TetrisObject.prototype.objectCollisionDown= function (){
-  //Þarf að búa til copy hérna
+
+  //Þessi kóði virkar
   let tetrominoCopy = this.currentTetromino;
   for(let i =0; i<tetrominoCopy.length;i++){
     let square = tetrominoCopy[i];
@@ -274,7 +277,9 @@ TetrisObject.prototype.objectCollisionLeft = function (){
       return true;
     }
   }
+
   return false;  
+
 }
 
 TetrisObject.prototype.rotate = function(){
@@ -291,6 +296,7 @@ TetrisObject.prototype.rotate = function(){
     //var y = square[1]+this.cy;
     if(x>=g_grid.gridColumns){
       return true;
+
     }
   }
   return false;
@@ -325,6 +331,7 @@ TetrisObject.prototype.reset = function (){
     let y = this.currentTetromino[r][1] + this.cy;
     g_grid.cells[x][y] = {status: 0}
   }
+
   g_grid.checkRows();
 }
 
@@ -340,7 +347,9 @@ TetrisObject.prototype.killTetromino = function (){
 }
 
 TetrisObject.prototype.render = function (ctx) {
+
   /*
+
   for(let r = 0; r<this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
     let y = this.currentTetromino[r][1] + this.cy;
