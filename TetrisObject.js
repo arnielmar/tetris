@@ -205,7 +205,6 @@ TetrisObject.prototype.update = function (du) {
 
 
 TetrisObject.prototype.reRender = function () {
-  debugger;
   if (this.myState === 0) {
     for(let r = 0; r<this.currentTetromino.length; r++){
       let x = this.currentTetromino[r][0] + this.cx;
