@@ -153,8 +153,57 @@ function preloadDone() {
 	main.init();
 }
 
-// Kick it off
-// debugger;
-requestPreloads();
-g_grid.setUpCanvas(g_ctx);
+function startGame() {
+  ctx.clearRect(0, 0, g_canvas.width, g_canvas.height);
+  requestPreloads();
+  g_grid.setUpCanvas(g_ctx);
+}
 
+function loadStartScreen(ctx) {
+
+  ctx.save();
+
+  // Background color
+  util.fillBox(ctx, 0, 0, g_canvas.width, g_canvas.height, "black");
+
+  // Tetromino image
+  let startImage = new Image();
+  startImage.src = "./images/tetris.png";
+  startImage.onload = function(){
+    ctx.drawImage(startImage, g_canvas.width/2 - startImage.width/2, g_canvas.height/2 - startImage.height/2);
+  }
+
+  let height = g_canvas.height/2 - 100;
+
+  // Tetris text
+  ctx.font = '64px serif';
+  ctx.fillStyle = "red";
+  ctx.fillText('T', g_canvas.width/2 - 130, height);
+  ctx.fillStyle = "green";
+  ctx.fillText('E', g_canvas.width/2 - 80, height);
+  ctx.fillStyle = "orange";
+  ctx.fillText('T', g_canvas.width/2 - 30, height);
+  ctx.fillStyle = "purple";
+  ctx.fillText('R', g_canvas.width/2 + 20, height);
+  ctx.fillStyle = "lightblue";
+  ctx.fillText('I', g_canvas.width/2 + 70, height);
+  ctx.fillStyle = "yellow";
+  ctx.fillText('S', g_canvas.width/2 + 100, height);
+
+  // Start game text
+  ctx.font = '32px serif';
+  ctx.textAlign = "center";
+  ctx.fillStyle = "blue";
+  ctx.fillText('START GAME', g_canvas.width/2, g_canvas.height - 150);
+
+  ctx.restore();
+
+  // Clicka með mús eitthversstaðar til að byrja leik
+  g_canvas.addEventListener('click', function (e) {
+    startGame();
+  });
+}
+
+
+// Kick it off með start skjá
+loadStartScreen(g_ctx);
