@@ -95,10 +95,12 @@ TetrisObject.prototype.update = function (du) {
   // Held það sé í lagi að hafa þetta hérna, isColliding er þá bara fyrir hlut í hlut collision
 
   if (eatKey(this.KEY_LEFT)) {
+    this.reset();
     this.oneLeft();
   }
 
   if (eatKey(this.KEY_RIGHT)) {
+    this.reset();
     this.oneRight();
   }
 
@@ -114,7 +116,29 @@ TetrisObject.prototype.update = function (du) {
   /////////////////////////////////////////////////////////////////////////////////////////////
 
   if(eatKey(this.KEY_ROTATE)){
-    this.rotate();
+    
+    if(!this.rotate() && !this.rotateCollision()){
+      this.reset();
+      this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
+      this.currentTetromino = this.tetromino[this.tetrominoN];
+    }
+    if(this.rotate()){
+      if(this._width==0 || this._width==3){
+      this.reset();
+      var nidur = -this._width-1-2;
+      this.cx=this.cx+nidur;
+      this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
+      this.currentTetromino = this.tetromino[this.tetrominoN];
+      }else{
+        //harðkóðað fyrir I gæjann.....
+      this.reset();
+      var nidur = -this._width-1;
+      this.cx=this.cx+nidur;
+      this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
+      this.currentTetromino = this.tetromino[this.tetrominoN];
+
+      }
+    }
     this.calcWidthNHeight();
 
     //let nextPatter = this.tetromino[(this.tetrominoN+1)%this.tetromino.length]
@@ -124,12 +148,15 @@ TetrisObject.prototype.update = function (du) {
 
   }
 
+
   for(let r = 0; r<this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
     let y = this.currentTetromino[r][1] + this.cy;
-    g_grid.cells[x][y] = {
-      status: 1,
-      sprite: this.currentTetroSprite
+    if(g_grid.cells[x][y].status !==2){
+      g_grid.cells[x][y] = {
+        status: 1,
+        sprite: this.currentTetroSprite
+      }
     }
   }
 
@@ -141,41 +168,15 @@ TetrisObject.prototype.update = function (du) {
   }
 
 
-  // make sure it dosent collide with itself
-  // this.reset();
 
-  if (this.isColliding()) {
-    console.log("collision");
-    console.log("er ég hérna");
-    // TODO - this.stop()????
-
-    //byrja að gera þetta fall sem merkir sem 2
-  } else {
-    spatialManager.register(this);
-  }
-
-  //Vantar enþá collision þegar það er ýtt niður
   this.dropRate -= du;
   if(this.dropRate<0 && this.cy + this._height < g_grid.gridRows+1){
     this.reset();
     this.dropRate = g_grid.speed / NOMINAL_UPDATE_INTERVAL;
     this.oneDown();
-    //this.cy++;
-
   }
-
 };
 
-TetrisObject.prototype.isColliding = function() {
-  for(let r = 0; r<this.currentTetromino.length; r++){
-    let x = this.currentTetromino[r][0] + this.cx;
-    let y = this.currentTetromino[r][1] + this.cy;
-
-    let result = g_grid.isOccupied(x,y);
-    if (result) return true;
-  }
-  return false;
-}
 
 TetrisObject.prototype.calcWidthNHeight = function() {
   var wLargestX = 0;
@@ -201,19 +202,14 @@ TetrisObject.prototype.calcWidthNHeight = function() {
 }
 
 
-
-
 TetrisObject.prototype.oneDown = function () {
   if((this.cy + this._height < g_grid.gridRows)){
-      //if(!this.objectCollisionDown()){
       if(!this.objectCollisionDown()){
-        this.reset();
         this.cy+=1;
       }else{
         this.spawnNew();
       }
   }else{
-    console.log("collision")
 
     this.spawnNew();
 
@@ -221,130 +217,109 @@ TetrisObject.prototype.oneDown = function () {
 }
 
 TetrisObject.prototype.spawnNew = function (){
+  this.killTetromino();
   this.kill();
   createTetro();
+  //g_grid.checkRows();
 }
+
 
 TetrisObject.prototype.oneRight = function () {
-  if((this.cx + this._width) < g_grid.gridColumns){
-      if(!this.objectCollisionRight()){
-        this.reset();
-        this.cx+=1;
-      }
+  if(((this.cx + this._width) < g_grid.gridColumns) && (!this.objectCollisionRight())){
+      this.cx+=1;
   }
 }
-
 
 TetrisObject.prototype.oneLeft = function () {
-  if(this.cx > 0){
-    if(!this.objectCollisionLeft()){
-
-      this.reset();
-      this.cx-=1;
-    }
+  if(this.cx > 0 && !this.objectCollisionLeft()){
+    this.reset();
+    this.cx-=1; 
 
   }
 }
-
-
 TetrisObject.prototype.objectCollisionDown= function (){
+
   //Þessi kóði virkar
   let tetrominoCopy = this.currentTetromino;
   for(let i =0; i<tetrominoCopy.length;i++){
     let square = tetrominoCopy[i];
     let x = square[0]+this.cx;
     let y = square[1]+this.cy;
-    if(g_grid.cells[x][y+1].status===1){
+    if(g_grid.cells[x][y+1].status===2){
       return true;
     }
   }
   return false;
 }
 
-TetrisObject.prototype.objectCollisionRight = function (){
-  //Þetta er gallað
-  var biggerX = 0;
-  let x;
-  let y;
-  for(let r = 0; r < this.currentTetromino.length; r++){
-    x = this.currentTetromino[r][0] + this.cx;
-    y = this.currentTetromino[r][1] + this.cy;
-    if(x>biggerX){
-      biggerX = x;
+
+TetrisObject.prototype.objectCollisionRight = function(){
+
+  for(var i = 0; i<this.currentTetromino.length; i++){
+    var square = this.currentTetromino[i];
+    var x = square[0]+this.cx;
+    var y = square[1]+this.cy;
+    x++;
+    if(g_grid.cells[x][y].status === 2){
+      return true;
     }
   }
- if((g_grid.cells[biggerX+1][this.cy+this._height].status===1) || (g_grid.cells[biggerX+1][this.cy].status===1)){
-   return true;
- }else{
-   return false;
- }
+  return false;
 }
-
-
-
-
-
-
-
-
 
 TetrisObject.prototype.objectCollisionLeft = function (){
-  //Þetta er gallað
-  if((g_grid.cells[this.cx-1][this.cy+this._height].status===1) || (g_grid.cells[this.cx-1][this.cy].status===1)){
-    return true;
-  }else{
-    return false;
+  for(var i = 0; i<this.currentTetromino.length; i++){
+    var square = this.currentTetromino[i];
+    var x = square[0]+this.cx;
+    var y = square[1]+this.cy;
+    x--;
+    if(g_grid.cells[x][y].status ===2){
+      return true;
+    }
   }
 
+  return false;  
 
 }
-
 
 TetrisObject.prototype.rotate = function(){
+  var tetromino = this.tetromino;
+  var tetrominoCopy = this.currentTetromino;
+  var tetrominoNCopy = this.tetrominoN;
+  //Rotate-um þessum gervi hlut
+  tetrominoNCopy = (tetrominoNCopy + 1)%tetromino.length;
+  tetrominoCopy =  tetromino[tetrominoNCopy];
 
-  //frekar að athuga með next pattern
-    if(this.cx + this._width<g_grid.gridColumns){
-      if((this._height === 0 || this._height === 3) && (this.cx <=11 && this.cx> 6)){
-        this.reset();
-        this.cx = 6;
-      }
-      this.reset();
-      this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
-      this.currentTetromino = this.tetromino[this.tetrominoN];
+  for(var i = 0; i<tetrominoCopy.length; i++){
+    var square = tetrominoCopy[i];
+    var x = square[0]+this.cx;
+    //var y = square[1]+this.cy;
+    if(x>=g_grid.gridColumns){
+      return true;
 
     }
-    if(this.cx + this._width>=g_grid.gridColumns){
-      //Þetta virkar fyrir alla kubbana nema I
-      //Bara eitt tilvik þar sem þetta virkar ekki, þegar I kubburinn er alveg útí enda láréttur
-      //ætla að skoða þetta betur seinni
-      if((this._height !== 0 || this._height !== 3)){
-
-        this.reset();
-        this.cx = 8;
-        this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
-        this.currentTetromino = this.tetromino[this.tetrominoN];
-      }
-    }
-
+  }
+  return false;
 }
 
-TetrisObject.prototype.testCollision = function(){
-  for(var r = 0; r<this.currentTetromino.length; r++){
 
-      let newX = this.currentTetromino[r][0] + this.cx;
-      let newY = this.currentTetromino[r][1] + this.cy;
+TetrisObject.prototype.rotateCollision = function(){
+  var tetromino = this.tetromino;
+  var tetrominoCopy = this.currentTetromino;
+  var tetrominoNCopy = this.tetrominoN;
 
-      if(newX < 0 || newX >= g_grid.gridColumns || newY >= g_grid.gridRows){
-        return true;
-      }
+  //Rotate-um þessum gervi hlut
+  tetrominoNCopy = (tetrominoNCopy + 1)%tetromino.length;
+  tetrominoCopy =  tetromino[tetrominoNCopy];
 
-      if(newY < 0){
-        continue;
-      }
-
-      if(g_grid.cells[newX][newY].status === 1){
-        return true;
-      }
+  for(var i = 0; i<tetrominoCopy.length; i++){
+    //athugum x og y á þessum gervi tetromino hlut
+    var square = tetrominoCopy[i];
+    var x = square[0]+this.cx;
+    var y = square[1]+this.cy;
+    if(g_grid.cells[x][y].status === 2){
+      return true;
+    }
   }
   return false;
 }
@@ -361,14 +336,19 @@ TetrisObject.prototype.reset = function (){
 }
 
 TetrisObject.prototype.killTetromino = function (){
-  for(let r = 0; r < this.currentTetromino.length; r++){
+  for(let r = 0; r<this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
     let y = this.currentTetromino[r][1] + this.cy;
-    g_grid.cells[x][y] = {status: 2}
+    g_grid.cells[x][y] = {
+      status: 2,
+      sprite: this.currentTetroSprite
+    }
   }
 }
 
 TetrisObject.prototype.render = function (ctx) {
+
+  /*
 
   for(let r = 0; r<this.currentTetromino.length; r++){
     let x = this.currentTetromino[r][0] + this.cx;
@@ -378,5 +358,6 @@ TetrisObject.prototype.render = function (ctx) {
       sprite: this.currentTetroSprite
     }
   }
+  */
 
 };
