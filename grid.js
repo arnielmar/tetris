@@ -143,18 +143,6 @@ Grid.prototype.drawFinalScore = function (ctx) {
 
 }
 
-
-Grid.prototype.isOccupied = function (x, y) {
-  // 0 = blank space, 1 = moving tetris object
-  const stat = this.cells[x][y].status
-  if (stat !== 0 && stat !== 1) return true;
-  return false;
-}
-
-Grid.prototype.occupy - function (x, y, colorcode) {
-  this.cells[x][y].status = colorcode;
-}
-
 Grid.prototype.setUpCanvas = function (ctx){
     this.generateGrid();
     // this.drawBoard(ctx);
