@@ -29,7 +29,6 @@ function createTetro() {
   var nextTetrominoTEST = TETROMINOS[rNext][0];
   var nextColor = TETROMINOS[rNext][1];
 
-
   entityManager.generateObject({tetromino: tetromino,
                                 tetrominoN: 0,
                                 currentTetromino: tetromino[0],

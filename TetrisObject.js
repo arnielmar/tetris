@@ -123,19 +123,20 @@ TetrisObject.prototype.update = function (du) {
       this.currentTetromino = this.tetromino[this.tetrominoN];
     }
     if(this.rotate()){
-      if(this._width!==0){
+      if(this._width==0 || this._width==3){
       this.reset();
-      var nidur = -this._width-1;
+      var nidur = -this._width-1-2;
       this.cx=this.cx+nidur;
       this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
       this.currentTetromino = this.tetromino[this.tetrominoN];
       }else{
         //harðkóðað fyrir I gæjann.....
-        this.reset();
-        var nidur = -this._width-1-2;
-        this.cx=this.cx+nidur;
-        this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
-        this.currentTetromino = this.tetromino[this.tetrominoN];
+      this.reset();
+      var nidur = -this._width-1;
+      this.cx=this.cx+nidur;
+      this.tetrominoN = (this.tetrominoN + 1)%this.tetromino.length;
+      this.currentTetromino = this.tetromino[this.tetrominoN];
+
       }
     }
     this.calcWidthNHeight();
@@ -174,7 +175,6 @@ TetrisObject.prototype.update = function (du) {
     this.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
     this.oneDown();
   }
-
 };
 
 
@@ -218,6 +218,7 @@ TetrisObject.prototype.spawnNew = function (){
   this.killTetromino();
   this.kill();
   createTetro();
+  //g_grid.checkRows();
 }
 
 
@@ -276,29 +277,22 @@ TetrisObject.prototype.objectCollisionLeft = function (){
   return false;  
 }
 
-
-
 TetrisObject.prototype.rotate = function(){
-  
   var tetromino = this.tetromino;
   var tetrominoCopy = this.currentTetromino;
   var tetrominoNCopy = this.tetrominoN;
-
   //Rotate-um þessum gervi hlut
   tetrominoNCopy = (tetrominoNCopy + 1)%tetromino.length;
   tetrominoCopy =  tetromino[tetrominoNCopy];
 
   for(var i = 0; i<tetrominoCopy.length; i++){
-
     var square = tetrominoCopy[i];
     var x = square[0]+this.cx;
     //var y = square[1]+this.cy;
-
     if(x>=g_grid.gridColumns){
       return true;
     }
   }
-
   return false;
 }
 
@@ -322,7 +316,6 @@ TetrisObject.prototype.rotateCollision = function(){
     }
   }
   return false;
-
 }
 
 
@@ -332,6 +325,7 @@ TetrisObject.prototype.reset = function (){
     let y = this.currentTetromino[r][1] + this.cy;
     g_grid.cells[x][y] = {status: 0}
   }
+  g_grid.checkRows();
 }
 
 TetrisObject.prototype.killTetromino = function (){
@@ -343,8 +337,6 @@ TetrisObject.prototype.killTetromino = function (){
       sprite: this.currentTetroSprite
     }
   }
-  
-
 }
 
 TetrisObject.prototype.render = function (ctx) {
