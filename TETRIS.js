@@ -199,7 +199,8 @@ function loadStartScreen(ctx) {
   ctx.restore();
 
   // Clicka með mús eitthversstaðar til að byrja leik
-  g_canvas.addEventListener('click', function (e) {
+  g_canvas.addEventListener('click', function listener (e) {
+    g_canvas.removeEventListener('click', listener);
     startGame();
   });
 }
