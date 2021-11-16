@@ -91,7 +91,11 @@ const level = new Audio('audio/success.wav');
 const gameOver = new Audio('audio/gameover.wav');
 const clear = new Audio('audio/clear.wav');
 const game = new Audio('audio/tetris-gameboy-02.mp3')
+game.volume = 0.1;
 TetrisObject.prototype.update = function (du) {
+
+
+  
 
   if (this.myState === 1 && GET_NEXT_TETROMINO) {
     debugger;

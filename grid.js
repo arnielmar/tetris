@@ -70,6 +70,7 @@ Grid.prototype.resetGrid = function (){
     }
 }
 
+
 Grid.prototype.drawBoard = function (ctx){
   //Búum til einn tetro
 
@@ -130,7 +131,7 @@ Grid.prototype.drawBoard = function (ctx){
 
     if(!this.lostAnimationDone && !this.lostAnimationToggle){
       game.play();
-      game.volume = 0.1;
+      //game.volume = 0.1;
     }
 
 }

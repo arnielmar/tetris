@@ -8,6 +8,8 @@
 
 var g_canvas = document.getElementById("myCanvas");
 var g_ctx = g_canvas.getContext("2d");
+var muteButton = document.getElementById("muteButton");
+var unmuteButton = document.getElementById("unmutebutton");
 
 /*
 0        1         2         3         4         5         6         7         8
@@ -208,6 +210,15 @@ function loadStartScreen(ctx) {
     g_canvas.removeEventListener('click', listener);
     startGame();
   });
+
+  muteButton.addEventListener("click", function listener(e){
+    game.volume = 0;
+  });
+
+  unmuteButton.addEventListener("click", function listener(e){
+    game.volume = 0.1;
+  });
+  
 }
 
 
