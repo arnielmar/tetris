@@ -113,7 +113,6 @@ function renderSimulation(ctx) {
 
 	g_grid.drawBoard(g_ctx);
 	entityManager.render(ctx);
-
 	if (g_renderSpatialDebug) spatialManager.render(ctx);
 }
 
@@ -154,7 +153,8 @@ function preloadDone() {
   g_sprites.empty = new Sprite(g_images.empty);
 
 	createInitialObjects();
-
+  //game.pause();
+  //game.currentTime = 0;
 	main.init();
 }
 

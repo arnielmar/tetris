@@ -87,7 +87,9 @@ Grid.prototype.drawBoard = function (ctx){
 
               if (this.cells[c][r].status !== 3) {
                 this.lostAnimationToggle = true;
-
+                game.pause();
+                game.currentTime = 0;
+                gameOver.play();
                 var keys = Object.keys(g_sprites);
 
                 const index = keys.indexOf("empty");
@@ -120,7 +122,14 @@ Grid.prototype.drawBoard = function (ctx){
 
     if (this.lostAnimationDone) {
       // this.resetGrid();
+      game.pause();
+      game.currentTime = 0;
       this.drawFinalScore(ctx);
+    }
+
+    if(!this.lostAnimationDone && !this.lostAnimationToggle){
+      game.play();
+      game.volume = 0.2;
     }
 
 }
@@ -146,6 +155,7 @@ Grid.prototype.restartFunction = function() {
   GET_NEXT_TETROMINO = false;
   SWITH_HOLDING_TETREMINOS = false;
   CURRENT_COORDINATES = [0,4];
+
   this.resetGrid();
   createInitialObjects();
 }
@@ -201,7 +211,8 @@ Grid.prototype._checkLevelUp = function (rows) {
   // Checka hvort við séum að levela upp
   if (this.lines >= 10 * this.level) {
     //this.lines = this.lines % 10;   // Lækka um 10 svo ég geti haldið utan um hvenær á að levela upp
-    this.level++;                   // Hækka level um 1
+    this.level++; 
+    level.play();                  // Hækka level um 1
     // Lækka speed um 100 nema það sé nú þegar á hraðasta
     if (this.speed > 100) {
       this.speed -= 100;
@@ -247,10 +258,13 @@ Grid.prototype.checkRows = function () {
     for (let c = 0; c <= this.gridColumns; c++) {
       if (this.cells[c][r].status !== 2) {
         rowFull = false;
+        //fall.play();
         break;
       }
     }
     if (rowFull) {
+      //line.play();
+      clear.play();
       rowsFull += 1;
       for (let c = 0; c <= this.gridColumns; c++) {
         this.cells[c][r].status = 0;
@@ -265,6 +279,8 @@ Grid.prototype.checkRows = function () {
         }
       }
       r++;
+    }else{
+      fall.play();
     }
   }
 

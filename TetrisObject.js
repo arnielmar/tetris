@@ -86,6 +86,13 @@ TetrisObject.prototype.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
 //Allir tetris hlutir eru svo með 4 önnur fylki sem eru mögulegu hreyfingarnar sem þeir geta tekið.
 
 
+//Sound globals
+const fall = new Audio('audio/fall.wav');
+const line = new Audio('audio/line.wav');
+const level = new Audio('audio/success.wav');
+const gameOver = new Audio('audio/gameover.wav');
+const clear = new Audio('audio/clear.wav');
+const game = new Audio('audio/tetris-gameboy-02.mp3')
 TetrisObject.prototype.update = function (du) {
 
   if (this.myState === 1 && GET_NEXT_TETROMINO) {
@@ -221,10 +228,13 @@ TetrisObject.prototype.update = function (du) {
 
   this.dropRate -= du;
   if(this.dropRate<0 && this.cy + this._height < g_grid.gridRows+1){
+
     this.reset();
+    //this.reRender()
     this.dropRate = g_grid.speed / NOMINAL_UPDATE_INTERVAL;
     this.oneDown();
   }
+
 };
 
 
@@ -314,10 +324,11 @@ TetrisObject.prototype.oneDown = function () {
         this.cy+=1;
         this.reRender();
       }else{
+        //fall.play();
         this.spawnNew();
       }
   }else{
-
+    //fall.play();
     this.spawnNew();
 
   }
@@ -340,7 +351,6 @@ TetrisObject.prototype.spawnNew = function (){
   // if player is still playing make new tertremino
   if (!g_grid.lost) {
     g_grid.checkRows();
-
     createTetro(1, null, false);
     GET_NEXT_TETROMINO = true;
   }
@@ -501,6 +511,7 @@ TetrisObject.prototype.render = function (ctx) {
   const cellP = g_grid.cellPadding;
 
   const tetro = this.currentTetromino;
+
 
   // render me as the next teromino
   if (this.myState === 1) {
