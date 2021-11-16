@@ -90,6 +90,7 @@ Grid.prototype.drawBoard = function (ctx){
                 game.pause();
                 game.currentTime = 0;
                 gameOver.play();
+                gameOver.volume = 0.2;
                 var keys = Object.keys(g_sprites);
 
                 const index = keys.indexOf("empty");
@@ -129,7 +130,7 @@ Grid.prototype.drawBoard = function (ctx){
 
     if(!this.lostAnimationDone && !this.lostAnimationToggle){
       game.play();
-      game.volume = 0.2;
+      game.volume = 0.1;
     }
 
 }
@@ -212,7 +213,8 @@ Grid.prototype._checkLevelUp = function (rows) {
   if (this.lines >= 10 * this.level) {
     //this.lines = this.lines % 10;   // Lækka um 10 svo ég geti haldið utan um hvenær á að levela upp
     this.level++; 
-    level.play();                  // Hækka level um 1
+    level.play();
+    level.sound = 0.2;                  // Hækka level um 1
     // Lækka speed um 100 nema það sé nú þegar á hraðasta
     if (this.speed > 100) {
       this.speed -= 100;
@@ -281,6 +283,7 @@ Grid.prototype.checkRows = function () {
       r++;
     }else{
       fall.play();
+      fall.sound = 0.2;
     }
   }
 

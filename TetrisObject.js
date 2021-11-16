@@ -19,6 +19,7 @@ function TetrisObject(descr) {
   // Common inherited setup logic from Entity
   this.setup(descr);
   this.rememberResets();
+  this.reRender();
   // Default sprite, if not otherwise specified
   //this.sprite = this.sprite || g_sprites.TetrisObject;
 
@@ -28,10 +29,7 @@ function TetrisObject(descr) {
   // Set normal drawing scale, and warp state off
   this._scale = 1;
 
-  this.reRender();
 };
-
-
 
 TetrisObject.prototype = new Entity();
 
@@ -526,6 +524,7 @@ TetrisObject.prototype.render = function (ctx) {
 
       this.currentTetroSprite.drawAt(ctx, x, y);
     }
+    this.reRender();
   }
 
   //render me as the held teromino
@@ -541,6 +540,9 @@ TetrisObject.prototype.render = function (ctx) {
         this.currentTetroSprite.drawAt(ctx, x, y);
       }
     }
+    this.reRender();
   }
+
+  //this.reRender();
 
 };
