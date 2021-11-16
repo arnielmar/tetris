@@ -103,6 +103,7 @@ TetrisObject.prototype.update = function (du) {
       GET_NEXT_TETROMINO = false;
       this.myState = 0;
     }
+    this.reRender();
   }
 
   if (SWITH_HOLDING_TETREMINOS) {
@@ -121,13 +122,7 @@ TetrisObject.prototype.update = function (du) {
         SWITH_HOLDING_TETREMINOS = false;
       }
     }
-    // if (this.myState === 0) {
-    //   // this.reset();
-    //   this.cx = CURRENT_COORDINATES[0];
-    //   this.cy = CURRENT_COORDINATES[1];
-    //   SWITH_HOLDING_TETREMINOS = false;
-    // }
-
+    this.reRender();
   }
 
   if (this.myState !== 0) return;
