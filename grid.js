@@ -41,6 +41,11 @@ Grid.prototype.lines = 0;
 Grid.prototype.level = 1;
 Grid.prototype.speed = 1000;
 Grid.prototype.score = 0;
+Grid.prototype.linesElem = document.getElementById('lines');
+Grid.prototype.levelElem = document.getElementById('level');
+Grid.prototype.scoreElem = document.getElementById('score');
+
+Grid.prototype.highscores = [];
 
 Grid.prototype.generateGrid = function (){
     //createTetro();
@@ -120,13 +125,36 @@ Grid.prototype.drawBoard = function (ctx){
 
 }
 
+Grid.prototype.restartFunction = function() {
+  // Add to highscore
+  this.highscores.push(this.score);
+  this.highscores.sort();
+  this.highscores.reverse();
+  // Restart score, level, lines and speed
+  this.score = 0;
+  this.scoreElem.innerHTML = this.score;
+  this.level = 1;
+  this.levelElem.innerHTML = this.level;
+  this.lines = 0;
+  this.linesElem.innerHTML = this.lines;
+  this.speed = 1000;
+  entityManager.clear();
+  // Restart the game
+  this.lost = false;
+  this.lostAnimationToggle = false;
+  this.lostAnimationDone = false;
+  GET_NEXT_TETROMINO = false;
+  SWITH_HOLDING_TETREMINOS = false;
+  CURRENT_COORDINATES = [0,4];
+  this.resetGrid();
+  createInitialObjects();
+}
+
 Grid.prototype.drawFinalScore = function (ctx) {
-
-
   const startX = this.cx - this.gridWidth*3/8;
-  const startY = this.cy - this.gridHeight*2/8;
+  const startY = this.cy - this.gridHeight*3/8;
   const myWidth = 6/8*this.gridWidth;
-  const myHeight = 4/8*this.gridHeight;
+  const myHeight = 6/8*this.gridHeight;
 
   util.fillBox(ctx, startX, startY, myWidth, myHeight, "black");
 
@@ -137,15 +165,34 @@ Grid.prototype.drawFinalScore = function (ctx) {
   ctx.fillText('Final score', startX + myWidth/2, startY + myHeight/8);
 
   ctx.font = '48px serif';
-  ctx.fillText(`${this.score}`, startX + myWidth/2, startY + myHeight/2);
+  ctx.fillText(`${this.score}`, startX + myWidth/2, startY + myHeight/4);
+
+  ctx.font = '32px serif';
+  ctx.fillText("Restart", startX + myWidth/2, startY + myHeight/2);
+  g_canvas.addEventListener("click", function listener(e){
+    g_canvas.removeEventListener("click", listener);
+    g_grid.restartFunction();
+    console.log(e);
+  });
+
+  ctx.fillText("Highscore",startX + myWidth/2, startY + myHeight/1.5);
+
+  ctx.font = '24px serif';
+  if (this.highscores[0]){
+    ctx.fillText(`${this.highscores[0]}`,startX + myWidth/2, startY + myHeight/1.35);
+  }
+  if (this.highscores[1]){
+    ctx.fillText(`${this.highscores[1]}`,startX + myWidth/2, startY + myHeight/1.25);
+  }
+  if (this.highscores[2]){
+    ctx.fillText(`${this.highscores[2]}`,startX + myWidth/2, startY + myHeight/1.15);
+  }
 
   ctx.restore();
-
 }
 
 Grid.prototype.setUpCanvas = function (ctx){
     this.generateGrid();
-    // this.drawBoard(ctx);
 }
 
 Grid.prototype._checkLevelUp = function (rows) {
@@ -161,10 +208,8 @@ Grid.prototype._checkLevelUp = function (rows) {
     }
   }
 
-  let linesElem = document.getElementById('lines');
-  linesElem.innerHTML = this.lines;
-  let levelElem = document.getElementById('level');
-  levelElem.innerHTML = this.level;
+  this.linesElem.innerHTML = this.lines;
+  this.levelElem.innerHTML = this.level;
 }
 
 Grid.prototype._addScore = function (rows) {
@@ -191,8 +236,7 @@ Grid.prototype._addScore = function (rows) {
       this.score += (1200 * this.level);
       break;
   }
-  let scoreElem = document.getElementById('score');
-  scoreElem.innerHTML = this.score;
+  this.scoreElem.innerHTML = this.score;
 }
 
 Grid.prototype.checkRows = function () {

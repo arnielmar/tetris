@@ -59,6 +59,14 @@ var entityManager = {
     this._tetrisObjects.push(new TetrisObject(descr));
   },
 
+  clear: function() {
+    for (var c = 0; c < this._categories.length; ++c) {
+      var aCategory = this._categories[c];
+      var i = 0;
+      aCategory.splice(0,aCategory.length);
+    }
+  },
+
   update: function(du) {
     for (var c = 0; c < this._categories.length; ++c) {
         var aCategory = this._categories[c];
