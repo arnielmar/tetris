@@ -18,81 +18,81 @@ e.g. general collision detection.
 
 var spatialManager = {
 
-	// "PRIVATE" DATA
+  // "PRIVATE" DATA
 
-	_nextSpatialID: 1, // make all valid IDs non-falsey (i.e. don't start at 0)
+  _nextSpatialID: 1, // make all valid IDs non-falsey (i.e. don't start at 0)
 
-	_entities: [],
+  _entities: [],
 
-	// "PRIVATE" METHODS
-	//
-	// <none yet>
+  // "PRIVATE" METHODS
+  //
+  // <none yet>
 
 
-	// PUBLIC METHODS
+  // PUBLIC METHODS
 
-	getNewSpatialID: function () {
-		return this._nextSpatialID++;
-	},
+  getNewSpatialID: function () {
+    return this._nextSpatialID++;
+  },
 
-	register: function (entity) {
-		var pos = entity.getPos();
-		var spatialID = entity.getSpatialID();
+  register: function (entity) {
+    var pos = entity.getPos();
+    var spatialID = entity.getSpatialID();
 
-		var newEntry = {
-			posX: pos.posX,
-			posY: pos.posY,
-			radius: entity.getRadius(),
-			entity: entity
-		};
+    var newEntry = {
+      posX: pos.posX,
+      posY: pos.posY,
+      radius: entity.getRadius(),
+      entity: entity
+    };
 
-		this._entities[spatialID] = newEntry;
-	},
+    this._entities[spatialID] = newEntry;
+  },
 
-	unregister: function (entity) {
-		var spatialID = entity.getSpatialID();
+  unregister: function (entity) {
+    var spatialID = entity.getSpatialID();
 
-		if (this._entities[spatialID]) {
-			this._entities[spatialID] = null;
-		}
-	},
+    if (this._entities[spatialID]) {
+      this._entities[spatialID] = null;
+    }
+  },
 
-	findEntityInRange: function (posX, posY, radius) {
-		var closestEntity,
-			closestSq = 1000 * 1000;
+  findEntityInRange: function (posX, posY, radius) {
+    var closestEntity,
+      closestSq = 1000 * 1000;
 
-		for (var ID in this._entities) {
-			if (this._entities[ID]) {
-				var thisEntity = this._entities[ID].entity;
-				var thisPos = thisEntity.getPos();
-				var distSq = util.wrappedDistSq(
-					thisPos.posX, thisPos.posY,
-					posX, posY,
-					g_canvas.width, g_canvas.height);
-				var limitSq = util.square(thisEntity.getRadius() + radius);
-				if (distSq < limitSq) {
-					if (distSq < closestSq) {
-						closestEntity = thisEntity;
-						closestSq = distSq;
-					}
-				}
-			}
-		}
+    for (var ID in this._entities) {
+      if (this._entities[ID]) {
+        var thisEntity = this._entities[ID].entity;
+        var thisPos = thisEntity.getPos();
+        var distSq = util.wrappedDistSq(
+          thisPos.posX, thisPos.posY,
+          posX, posY,
+          g_canvas.width, g_canvas.height);
+        var limitSq = util.square(thisEntity.getRadius() + radius);
+        if (distSq < limitSq) {
+          if (distSq < closestSq) {
+            closestEntity = thisEntity;
+            closestSq = distSq;
+          }
+        }
+      }
+    }
 
-		return closestEntity;
-	},
+    return closestEntity;
+  },
 
-	render: function (ctx) {
-		var oldStyle = ctx.strokeStyle;
-		ctx.strokeStyle = "red";
+  render: function (ctx) {
+    var oldStyle = ctx.strokeStyle;
+    ctx.strokeStyle = "red";
 
-		for (var ID in this._entities) {
-			if (this._entities[ID]) {
-				var e = this._entities[ID];
-				util.strokeCircle(ctx, e.posX, e.posY, e.radius);
-			}
-		}
-		ctx.strokeStyle = oldStyle;
-	}
+    for (var ID in this._entities) {
+      if (this._entities[ID]) {
+        var e = this._entities[ID];
+        util.strokeCircle(ctx, e.posX, e.posY, e.radius);
+      }
+    }
+    ctx.strokeStyle = oldStyle;
+  }
 
 }

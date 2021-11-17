@@ -17,7 +17,6 @@ Grid.prototype.lost = false;
 Grid.prototype.lostAnimationToggle = false;
 Grid.prototype.lostAnimationDone = false;
 
-
 // stærðar breytur
 Grid.prototype.gridRows = 20;
 Grid.prototype.gridColumns = 10;
@@ -47,85 +46,76 @@ Grid.prototype.scoreElem = document.getElementById('score');
 
 Grid.prototype.highscores = [];
 
-Grid.prototype.generateGrid = function (){
-    //createTetro();
-    for(var c = 0; c <= this.gridColumns; c++){
-        this.cells[c] = [];
-        for(var r = 0; r <= this.gridRows; r++){
-            //merkja 0 ef það er tómt
-            this.cells[c][r] = {status: 0}
-        }
+Grid.prototype.generateGrid = function () {
+  //createTetro();
+  for (var c = 0; c <= this.gridColumns; c++) {
+    this.cells[c] = [];
+    for (var r = 0; r <= this.gridRows; r++) {
+      //merkja 0 ef það er tómt
+      this.cells[c][r] = { status: 0 }
     }
+  }
 }
 
-Grid.prototype.resetGrid = function (){
-    for(var c = 0; c <= this.gridColumns; c++){
-      this.cells[c] = [];
-        for(var r = 0; r <= this.gridRows; r++){
-            //merkja 0 ef það er tómt
-
-            this.cells[c][r] = {status: 0}
-
-        }
+Grid.prototype.resetGrid = function () {
+  for (var c = 0; c <= this.gridColumns; c++) {
+    this.cells[c] = [];
+    for (var r = 0; r <= this.gridRows; r++) {
+      //merkja 0 ef það er tómt
+      this.cells[c][r] = { status: 0 }
     }
+  }
 }
 
-Grid.prototype.drawBoard = function (ctx){
-  //Búum til einn tetro
+Grid.prototype.drawBoard = function (ctx) {
+  for (var c = 0; c <= this.gridColumns; c++) {
+    for (var r = 0; r <= this.gridRows; r++) {
+      var cellX = this.cx - (this.gridWidth / 2) + c * (this.cellWidth + this.cellPadding);
+      var cellY = this.cy - (this.gridHeight / 2) + r * (this.cellHeight + this.cellPadding) + this.cellPadding;
+      if (this.lost && !this.lostAnimationToggle) {
 
-    for(var c = 0; c <= this.gridColumns; c++){
-        for(var r= 0; r <= this.gridRows; r++){
-            var cellX = this.cx - (this.gridWidth / 2) + c * (this.cellWidth + this.cellPadding);
-            var cellY = this.cy - (this.gridHeight / 2) + r * (this.cellHeight + this.cellPadding) + this.cellPadding;
-            if (this.lost && !this.lostAnimationToggle) {
-              // util.fillBox(ctx, cellX, cellY, this.cellWidth, this.cellHeight, "blue");
-
-              if (this.cells[c][r].status === 3) {
-                this.cells[c][r].sprite.drawAt(ctx, cellX, cellY);
-              }
-
-
-              if (this.cells[c][r].status !== 3) {
-                this.lostAnimationToggle = true;
-
-                var keys = Object.keys(g_sprites);
-
-                const index = keys.indexOf("empty");
-                if (index > -1) {
-                  keys.splice(index, 1);
-                }
-
-                const theSprite = g_sprites[keys[Math.floor(Math.random()*keys.length)]];
-
-                this.cells[c][r] = {status: 3, sprite: theSprite};
-              }
-
-              if (c === this.gridColumns && r === this.gridRows) {
-                this.lostAnimationDone = true;
-              }
-            } else {
-              if(this.cells[c][r].status === 0){
-                  g_sprites.empty.drawAt(ctx, cellX, cellY);
-              }else{
-                  // Teikna sprite á þessu cell
-                  this.cells[c][r].sprite.drawAt(ctx, cellX, cellY);
-              }
-              //Annars er þetta partur af tetramino
-            }
+        if (this.cells[c][r].status === 3) {
+          this.cells[c][r].sprite.drawAt(ctx, cellX, cellY);
         }
-    }
 
-    // reset this param for next iteration
-    this.lostAnimationToggle = false;
+        if (this.cells[c][r].status !== 3) {
+          this.lostAnimationToggle = true;
 
-    if (this.lostAnimationDone) {
-      // this.resetGrid();
-      this.drawFinalScore(ctx);
+          var keys = Object.keys(g_sprites);
+
+          const index = keys.indexOf("empty");
+          if (index > -1) {
+            keys.splice(index, 1);
+          }
+
+          const theSprite = g_sprites[keys[Math.floor(Math.random() * keys.length)]];
+
+          this.cells[c][r] = { status: 3, sprite: theSprite };
+        }
+
+        if (c === this.gridColumns && r === this.gridRows) {
+          this.lostAnimationDone = true;
+        }
+      } else {
+        if (this.cells[c][r].status === 0) {
+          g_sprites.empty.drawAt(ctx, cellX, cellY);
+        } else {
+          this.cells[c][r].sprite.drawAt(ctx, cellX, cellY);
+        }
+      }
     }
+  }
+
+  // reset this param for next iteration
+  this.lostAnimationToggle = false;
+
+  if (this.lostAnimationDone) {
+    this.drawFinalScore(ctx);
+  }
 
 }
 
-Grid.prototype.restartFunction = function() {
+Grid.prototype.restartFunction = function () {
   // Add to highscore
   this.highscores.push(this.score);
   this.highscores.sort();
@@ -144,17 +134,17 @@ Grid.prototype.restartFunction = function() {
   this.lostAnimationToggle = false;
   this.lostAnimationDone = false;
   GET_NEXT_TETROMINO = false;
-  SWITH_HOLDING_TETREMINOS = false;
-  CURRENT_COORDINATES = [0,4];
+  SWITCH_HOLDING_TETREMINOS = false;
+  CURRENT_COORDINATES = [0, 4];
   this.resetGrid();
   createInitialObjects();
 }
 
 Grid.prototype.drawFinalScore = function (ctx) {
-  const startX = this.cx - this.gridWidth*3/8;
-  const startY = this.cy - this.gridHeight*3/8;
-  const myWidth = 6/8*this.gridWidth;
-  const myHeight = 6/8*this.gridHeight;
+  const startX = this.cx - this.gridWidth * 3 / 8;
+  const startY = this.cy - this.gridHeight * 3 / 8;
+  const myWidth = 6 / 8 * this.gridWidth;
+  const myHeight = 6 / 8 * this.gridHeight;
 
   util.fillBox(ctx, startX, startY, myWidth, myHeight, "black");
 
@@ -162,47 +152,43 @@ Grid.prototype.drawFinalScore = function (ctx) {
 
   ctx.font = '32px serif';
   ctx.textAlign = "center";
-  ctx.fillText('Final score', startX + myWidth/2, startY + myHeight/8);
+  ctx.fillText('Final score', startX + myWidth / 2, startY + myHeight / 8);
 
   ctx.font = '48px serif';
-  ctx.fillText(`${this.score}`, startX + myWidth/2, startY + myHeight/4);
+  ctx.fillText(`${this.score}`, startX + myWidth / 2, startY + myHeight / 4);
 
   ctx.font = '32px serif';
-  ctx.fillText("Restart", startX + myWidth/2, startY + myHeight/2);
-  g_canvas.addEventListener("click", function listener(e){
+  ctx.fillText("Restart", startX + myWidth / 2, startY + myHeight / 2);
+  g_canvas.addEventListener("click", function listener(e) {
     g_canvas.removeEventListener("click", listener);
     g_grid.restartFunction();
     console.log(e);
   });
 
-  ctx.fillText("Highscore",startX + myWidth/2, startY + myHeight/1.5);
+  ctx.fillText("Highscore", startX + myWidth / 2, startY + myHeight / 1.5);
 
   ctx.font = '24px serif';
-  if (this.highscores[0]){
-    ctx.fillText(`${this.highscores[0]}`,startX + myWidth/2, startY + myHeight/1.35);
+  if (this.highscores[0]) {
+    ctx.fillText(`${this.highscores[0]}`, startX + myWidth / 2, startY + myHeight / 1.35);
   }
-  if (this.highscores[1]){
-    ctx.fillText(`${this.highscores[1]}`,startX + myWidth/2, startY + myHeight/1.25);
+  if (this.highscores[1]) {
+    ctx.fillText(`${this.highscores[1]}`, startX + myWidth / 2, startY + myHeight / 1.25);
   }
-  if (this.highscores[2]){
-    ctx.fillText(`${this.highscores[2]}`,startX + myWidth/2, startY + myHeight/1.15);
+  if (this.highscores[2]) {
+    ctx.fillText(`${this.highscores[2]}`, startX + myWidth / 2, startY + myHeight / 1.15);
   }
 
   ctx.restore();
 }
 
-Grid.prototype.setUpCanvas = function (ctx){
-    this.generateGrid();
+Grid.prototype.setUpCanvas = function (ctx) {
+  this.generateGrid();
 }
 
 Grid.prototype._checkLevelUp = function (rows) {
-  // Bæta línum við og athuga hvort level sé að breytast
   this.lines += rows;
-  // Checka hvort við séum að levela upp
   if (this.lines >= 10 * this.level) {
-    //this.lines = this.lines % 10;   // Lækka um 10 svo ég geti haldið utan um hvenær á að levela upp
-    this.level++;                   // Hækka level um 1
-    // Lækka speed um 100 nema það sé nú þegar á hraðasta
+    this.level++;
     if (this.speed > 100) {
       this.speed -= 100;
     }
@@ -213,25 +199,18 @@ Grid.prototype._checkLevelUp = function (rows) {
 }
 
 Grid.prototype._addScore = function (rows) {
-  // Virkar ekki alveg rétt því það er kallað svo oft á þetta að rowsFull er aldrei meira en 1
-  // Bæta við score (original Nintendo Tetris scoring system)
   switch (rows) {
-    // Engin lína sprengd
     case 0:
       break;
-    // 1 lína sprengd
     case 1:
       this.score += (40 * this.level);
       break;
-    // 2 línur sprengdar
     case 2:
       this.score += (100 * this.level);
       break;
-    // 3 línur sprengdar
     case 3:
       this.score += (300 * this.level);
       break;
-    // 4 eða fleiri línur sprengdar
     default:
       this.score += (1200 * this.level);
       break;
@@ -240,7 +219,6 @@ Grid.prototype._addScore = function (rows) {
 }
 
 Grid.prototype.checkRows = function () {
-  // Halda utan um fullar raðir til að skila til baka í tetrisobject
   let rowsFull = 0;
   for (let r = this.gridRows; r >= 0; r--) {
     let rowFull = true;
@@ -255,12 +233,12 @@ Grid.prototype.checkRows = function () {
       for (let c = 0; c <= this.gridColumns; c++) {
         this.cells[c][r].status = 0;
       }
-      for (let row = r-1; row >= 0; row--) {
+      for (let row = r - 1; row >= 0; row--) {
         for (let col = 0; col <= this.gridColumns; col++) {
           if (this.cells[col][row].status === 2) {
-            this.cells[col][row].status = 0;    // Set status á þessum sem 0 til að lækka um eina röð
-            this.cells[col][row+1].status = 2;  // Set status á cell í röð fyrir neðan sem 2
-            this.cells[col][row+1].sprite = this.cells[col][row].sprite;  // Set status á cell í röð fyrir neðan sem 2
+            this.cells[col][row].status = 0;
+            this.cells[col][row + 1].status = 2;
+            this.cells[col][row + 1].sprite = this.cells[col][row].sprite;
           }
         }
       }
@@ -268,9 +246,7 @@ Grid.prototype.checkRows = function () {
     }
   }
 
-  // Athuga hvort level up
   this._checkLevelUp(rowsFull)
 
-  // Bæta við score
   this._addScore(rowsFull);
 }

@@ -6,7 +6,7 @@
 Provides a set of common functions which can be "inherited" by all other
 game Entities.
 
-JavaScript's prototype-based inheritance system is unusual, and requires 
+JavaScript's prototype-based inheritance system is unusual, and requires
 some care in use. In particular, this "base" should only provide shared
 functions... shared data properties are potentially quite confusing.
 
@@ -23,9 +23,9 @@ functions... shared data properties are potentially quite confusing.
 
 
 function Entity() {
-      // Diagnostics to check inheritance stuff
-      this._entityProperty = true;
-      console.dir(this);  
+  // Diagnostics to check inheritance stuff
+  this._entityProperty = true;
+  console.dir(this);
 };
 
 Entity.prototype.setup = function (descr) {

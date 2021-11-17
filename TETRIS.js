@@ -25,21 +25,15 @@ const g_grid = new Grid({
 })
 
 var GET_NEXT_TETROMINO = false;
-var SWITH_HOLDING_TETREMINOS = false;
-var CURRENT_COORDINATES = [0,4];
+var SWITCH_HOLDING_TETREMINOS = false;
+var CURRENT_COORDINATES = [0, 4];
 
 // ======================
 // CREATE INITIAL OBJECTS
 // ======================
 
 function createInitialObjects() {
-	// TODO
-	// Viljum við búa til 4 tetris kalla í byrjun?
-	// Einn sem byrjar og næstu 3 sem koma
-
-	//Testa að búa til einn í byrjun
-	//entityManager.generateObject({})
-	createTetro(0);
+  createTetro(0);
   createTetro(1, null, true);
   createTetro(2);
 }
@@ -49,8 +43,8 @@ function createInitialObjects() {
 // =============
 
 function gatherInputs() {
-	// Nothing to do here!
-	// The event handlers do everything we need for now.
+  // Nothing to do here!
+  // The event handlers do everything we need for now.
 }
 
 
@@ -69,9 +63,8 @@ function gatherInputs() {
 // GAME-SPECIFIC UPDATE LOGIC
 
 function updateSimulation(du) {
-
-	processDiagnostics();
-	entityManager.update(du);
+  processDiagnostics();
+  entityManager.update(du);
 }
 
 // GAME-SPECIFIC DIAGNOSTICS
@@ -85,13 +78,12 @@ var KEY_AVE_VEL = keyCode('V');
 var KEY_SPATIAL = keyCode('X');
 
 function processDiagnostics() {
+  if (eatKey(KEY_MIXED))
+    g_allowMixedActions = !g_allowMixedActions;
 
-	if (eatKey(KEY_MIXED))
-		g_allowMixedActions = !g_allowMixedActions;
+  if (eatKey(KEY_AVE_VEL)) g_useAveVel = !g_useAveVel;
 
-	if (eatKey(KEY_AVE_VEL)) g_useAveVel = !g_useAveVel;
-
-	if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
+  if (eatKey(KEY_SPATIAL)) g_renderSpatialDebug = !g_renderSpatialDebug;
 }
 
 
@@ -110,11 +102,10 @@ function processDiagnostics() {
 // GAME-SPECIFIC RENDERING
 
 function renderSimulation(ctx) {
+  g_grid.drawBoard(g_ctx);
+  entityManager.render(ctx);
 
-	g_grid.drawBoard(g_ctx);
-	entityManager.render(ctx);
-
-	if (g_renderSpatialDebug) spatialManager.render(ctx);
+  if (g_renderSpatialDebug) spatialManager.render(ctx);
 }
 
 
@@ -125,18 +116,18 @@ var g_images = {};
 
 function requestPreloads() {
 
-	var requiredImages = {
-		blue: "./images/blueTile.png",
-		green: "./images/greenTile.png",
-		orange: "./images/orangeTile.png",
-		purple: "./images/purpleTile.png",
-		red: "./images/redTile.png",
-		turkish: "./images/turkishTile.png",
-		yellow: "./images/yellowTile.png",
+  var requiredImages = {
+    blue: "./images/blueTile.png",
+    green: "./images/greenTile.png",
+    orange: "./images/orangeTile.png",
+    purple: "./images/purpleTile.png",
+    red: "./images/redTile.png",
+    turkish: "./images/turkishTile.png",
+    yellow: "./images/yellowTile.png",
     empty: "./images/emptyTile.png"
-	};
+  };
 
-	imagesPreload(requiredImages, g_images, preloadDone);
+  imagesPreload(requiredImages, g_images, preloadDone);
 
 }
 
@@ -153,9 +144,10 @@ function preloadDone() {
   g_sprites.yellow = new Sprite(g_images.yellow);
   g_sprites.empty = new Sprite(g_images.empty);
 
-	createInitialObjects();
+  createInitialObjects();
 
-	main.init();
+  main.init();
+
 }
 
 function startGame() {
@@ -174,42 +166,42 @@ function loadStartScreen(ctx) {
   // Tetromino image
   let startImage = new Image();
   startImage.src = "./images/tetris.png";
-  startImage.onload = function(){
-    ctx.drawImage(startImage, g_canvas.width/2 - startImage.width/2, g_canvas.height/2 - startImage.height/2);
+  startImage.onload = function () {
+    ctx.drawImage(startImage, g_canvas.width / 2 - startImage.width / 2, g_canvas.height / 2 - startImage.height / 2);
   }
 
-  let height = g_canvas.height/2 - 100;
+  let height = g_canvas.height / 2 - 100;
 
   // Tetris text
   ctx.font = '64px serif';
   ctx.fillStyle = "red";
-  ctx.fillText('T', g_canvas.width/2 - 130, height);
+  ctx.fillText('T', g_canvas.width / 2 - 130, height);
   ctx.fillStyle = "green";
-  ctx.fillText('E', g_canvas.width/2 - 80, height);
+  ctx.fillText('E', g_canvas.width / 2 - 80, height);
   ctx.fillStyle = "orange";
-  ctx.fillText('T', g_canvas.width/2 - 30, height);
+  ctx.fillText('T', g_canvas.width / 2 - 30, height);
   ctx.fillStyle = "purple";
-  ctx.fillText('R', g_canvas.width/2 + 20, height);
+  ctx.fillText('R', g_canvas.width / 2 + 20, height);
   ctx.fillStyle = "lightblue";
-  ctx.fillText('I', g_canvas.width/2 + 70, height);
+  ctx.fillText('I', g_canvas.width / 2 + 70, height);
   ctx.fillStyle = "yellow";
-  ctx.fillText('S', g_canvas.width/2 + 100, height);
+  ctx.fillText('S', g_canvas.width / 2 + 100, height);
 
   // Start game text
   ctx.font = '32px serif';
   ctx.textAlign = "center";
   ctx.fillStyle = "blue";
-  ctx.fillText('START GAME', g_canvas.width/2, g_canvas.height - 150);
+  ctx.fillText('START GAME', g_canvas.width / 2, g_canvas.height - 150);
 
   ctx.restore();
 
-  // Clicka með mús eitthversstaðar til að byrja leik
-  g_canvas.addEventListener('click', function listener (e) {
+  // Click the mouse on the canvas to start game
+  g_canvas.addEventListener('click', function listener(e) {
     g_canvas.removeEventListener('click', listener);
     startGame();
   });
+
 }
 
-
-// Kick it off með start skjá
+// Kick it off with the start screen
 loadStartScreen(g_ctx);
