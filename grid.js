@@ -140,7 +140,7 @@ Grid.prototype.restartFunction = function () {
   this.lostAnimationToggle = false;
   this.lostAnimationDone = false;
   GET_NEXT_TETROMINO = false;
-  SWITCH_HOLDING_TETREMINOS = false;
+  SWITCH_HOLDING_TETROMINOS = false;
   CURRENT_COORDINATES = [0, 4];
   this.resetGrid();
   createInitialObjects();

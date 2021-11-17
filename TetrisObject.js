@@ -42,21 +42,17 @@ TetrisObject.prototype.rememberResets = function () {
   this.reset_rotation = this.rotation;
 };
 
-TetrisObject.prototype.KEY_ROTATE = 'W'.charCodeAt(0);  // Rotate tetromino
-TetrisObject.prototype.KEY_DOWN = 'S'.charCodeAt(0);    // Move tetromino down
-TetrisObject.prototype.KEY_LEFT = 'A'.charCodeAt(0);    // Move tetromino left
-TetrisObject.prototype.KEY_RIGHT = 'D'.charCodeAt(0);   // Move tetromino right
-
-TetrisObject.prototype.KEY_SWITCH = 'C'.charCodeAt(0);  // Hold tetromino
+TetrisObject.prototype.KEY_ROTATE = 'W'.charCodeAt(0);    // Rotate tetromino
+TetrisObject.prototype.KEY_DOWN = 'S'.charCodeAt(0);      // Move tetromino down
+TetrisObject.prototype.KEY_LEFT = 'A'.charCodeAt(0);      // Move tetromino left
+TetrisObject.prototype.KEY_RIGHT = 'D'.charCodeAt(0);     // Move tetromino right
+TetrisObject.prototype.KEY_DROP = " ".charCodeAt(0);      // Drop tetromino to the ground
+TetrisObject.prototype.KEY_SWITCH = 'C'.charCodeAt(0);    // Hold tetromino
 
 // Initial, inheritable, default values
 TetrisObject.prototype.rotation = 0;
 TetrisObject.prototype.cx = 4;
 TetrisObject.prototype.cy = 0;
-//TetrisObject.prototype.velX = 0;
-//TetrisObject.prototype.velY = 0;
-//TetrisObject.prototype.launchVel = 2;
-//TetrisObject.prototype.numSubSteps = 1;
 
 // Breytur fyrir tetramino
 TetrisObject.prototype.tetromino;
@@ -92,28 +88,24 @@ TetrisObject.prototype.update = function (du) {
     this.reRender();
   }
 
-  if (SWITCH_HOLDING_TETREMINOS) {
+  if (SWITCH_HOLDING_TETROMINOS) {
     if (this.myState === 2) {
       if (!this.tetromino) {
         createTetro(1, null, false);
         GET_NEXT_TETROMINO = true;
         this.kill();
-        SWITCH_HOLDING_TETREMINOS = false;
+        SWITCH_HOLDING_TETROMINOS = false;
         return entityManager.KILL_ME_NOW;
       } else {
         this.myState = 0;
         this.cx = CURRENT_COORDINATES[0];
         this.cy = CURRENT_COORDINATES[1];
-        SWITCH_HOLDING_TETREMINOS = false;
+        SWITCH_HOLDING_TETROMINOS = false;
       }
     }
   }
 
   if (this.myState !== 0) return;
-
-  /////////////////////////////////////////////////////////////////////////////////////////////
-  // EDGE COLLISIONS
-  /////////////////////////////////////////////////////////////////////////////////////////////
 
   if (eatKey(this.KEY_LEFT)) {
     this.reset();
@@ -130,14 +122,26 @@ TetrisObject.prototype.update = function (du) {
     this.oneDown();
   }
 
-  /////////////////////////////////////////////////////////////////////////////////////////////
-  // EDGE COLLISIONS
-  /////////////////////////////////////////////////////////////////////////////////////////////
+  if (eatKey(this.KEY_DROP)) {
+    this.reset();
+    while (true) {
+      if ((this.cy + this._height < g_grid.gridRows)) {
+        if (!this.objectCollisionDown()) {
+          this.cy += 1;
+        } else {
+          break;
+        }
+      } else {
+        break;
+      }
+    }
+    this.spawnNew();
+  }
 
   if (eatKey(this.KEY_SWITCH)) {
     this.reset();
     this.myState = 2;
-    SWITCH_HOLDING_TETREMINOS = true;
+    SWITCH_HOLDING_TETROMINOS = true;
     CURRENT_COORDINATES = [this.cx, this.cy];
     this.backToStart();
     return;

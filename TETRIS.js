@@ -27,7 +27,7 @@ const g_grid = new Grid({
 })
 
 var GET_NEXT_TETROMINO = false;
-var SWITCH_HOLDING_TETREMINOS = false;
+var SWITCH_HOLDING_TETROMINOS = false;
 var CURRENT_COORDINATES = [0, 4];
 
 // ======================
