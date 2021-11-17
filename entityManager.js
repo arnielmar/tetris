@@ -26,13 +26,13 @@ var entityManager = {
 
   // "PRIVATE" DATA
 
-  _tetrisObjects  : [],
+  _tetrisObjects: [],
 
   // "PRIVATE" METHODS
 
-  _forEachOf: function(aCategory, fn) {
+  _forEachOf: function (aCategory, fn) {
     for (var i = 0; i < aCategory.length; ++i) {
-        fn.call(aCategory[i]);
+      fn.call(aCategory[i]);
     }
   },
 
@@ -41,66 +41,59 @@ var entityManager = {
   // A special return value, used by other objects,
   // to request the blessed release of death!
   //
-  KILL_ME_NOW : -1,
+  KILL_ME_NOW: -1,
 
   // Some things must be deferred until after initial construction
   // i.e. thing which need `this` to be defined.
   //
-  deferredSetup : function () {
-      this._categories = [this._tetrisObjects];
+  deferredSetup: function () {
+    this._categories = [this._tetrisObjects];
   },
 
-  init: function() {
-    // TODO - Hvað gerum við í init?
-  },
-
-  generateObject : function(descr) {
+  generateObject: function (descr) {
     //this._objects(new TetrisObject(descr));
     this._tetrisObjects.push(new TetrisObject(descr));
   },
 
-  clear: function() {
+  clear: function () {
     for (var c = 0; c < this._categories.length; ++c) {
       var aCategory = this._categories[c];
       var i = 0;
-      aCategory.splice(0,aCategory.length);
+      aCategory.splice(0, aCategory.length);
     }
   },
 
-  update: function(du) {
+  update: function (du) {
     for (var c = 0; c < this._categories.length; ++c) {
-        var aCategory = this._categories[c];
-        var i = 0;
+      var aCategory = this._categories[c];
+      var i = 0;
 
-        while (i < aCategory.length) {
-
-            var status = aCategory[i].update(du);
-
-            if (status === this.KILL_ME_NOW) {
-                // remove the dead guy, and shuffle the others down to
-                // prevent a confusing gap from appearing in the array
-                aCategory.splice(i,1);
-            }
-            else {
-                ++i;
-            }
+      while (i < aCategory.length) {
+        var status = aCategory[i].update(du);
+        if (status === this.KILL_ME_NOW) {
+          // remove the dead guy, and shuffle the others down to
+          // prevent a confusing gap from appearing in the array
+          aCategory.splice(i, 1);
         }
+        else {
+          ++i;
+        }
+      }
     }
   },
 
-  render: function(ctx) {
+  render: function (ctx) {
     var debugX = 10, debugY = 100;
 
     for (var c = 0; c < this._categories.length; ++c) {
 
-        var aCategory = this._categories[c];
+      var aCategory = this._categories[c];
 
-        for (var i = 0; i < aCategory.length; ++i) {
-            aCategory[i].render(ctx);
-            //debug.text(".", debugX + i * 10, debugY);
-        }
+      for (var i = 0; i < aCategory.length; ++i) {
+        aCategory[i].render(ctx);
+      }
 
-        debugY += 10;
+      debugY += 10;
     }
   }
 }

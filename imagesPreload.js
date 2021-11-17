@@ -12,8 +12,8 @@ var ctx = canvas.getContext("2d");
 12345678901234567890123456789012345678901234567890123456789012345678901234567890
 */
 
-// Extend the Image prototype (aka augment the "class") 
-// with my asyncLoad wrapper. 
+// Extend the Image prototype (aka augment the "class")
+// with my asyncLoad wrapper.
 //
 // I prefer this approach to setting onload/onerror/src directly.
 //
@@ -31,7 +31,7 @@ Image.prototype.asyncLoad = function (src, asyncCallback) {
   this.onload = asyncCallback;
   this.onerror = asyncCallback;
 
-  // NB: The load operation can be triggered from any point 
+  // NB: The load operation can be triggered from any point
   // after setting `this.src`.
   //
   // It *may* happen immediately (on some browsers) if the image is already
@@ -45,7 +45,7 @@ Image.prototype.asyncLoad = function (src, asyncCallback) {
 
 // imagePreload
 //
-// Horrible stuff to deal with the asynchronous nature of image-loading 
+// Horrible stuff to deal with the asynchronous nature of image-loading
 // in the browser...
 //
 // It requires setting-up a bunch of handler callbacks and then waiting for them
@@ -68,14 +68,14 @@ function imagesPreload(requiredImages,
     currentImage,
     preloadHandler;
 
-  // Count our `requiredImages` by using `Object.keys` to get all 
+  // Count our `requiredImages` by using `Object.keys` to get all
   // "*OWN* enumerable properties" i.e. doesn't traverse the prototype chain
   numImagesRequired = Object.keys(requiredImages).length;
 
   // A handler which will be called when our required images are finally
   // loaded (or when the fail to load).
   //
-  // At the time of the call, `this` will point to an Image object, 
+  // At the time of the call, `this` will point to an Image object,
   // whose `name` property will have been set appropriately.
   //
   preloadHandler = function () {
@@ -106,8 +106,8 @@ function imagesPreload(requiredImages,
     }
   };
 
-  // The "for..in" construct "iterates over the enumerable properties 
-  // of an object, in arbitrary order." 
+  // The "for..in" construct "iterates over the enumerable properties
+  // of an object, in arbitrary order."
   // -- unlike `Object.keys`, it traverses the prototype chain
   //
   for (currentName in requiredImages) {
