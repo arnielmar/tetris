@@ -20,6 +20,16 @@ body {
   .score {
     margin: 0 20px;
   }
+
+  .buttonMute {
+    margin: 0 20px;
+    padding-top: 20px;
+  }
+
+  .buttonUnmute{
+    margin: 0 20px;
+    padding-top: 20px;
+  }
   
   #myCanvas {
       background: #fff;

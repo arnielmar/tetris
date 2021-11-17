@@ -19,6 +19,7 @@ function TetrisObject(descr) {
   // Common inherited setup logic from Entity
   this.setup(descr);
   this.rememberResets();
+  this.reRender();
   // Default sprite, if not otherwise specified
   //this.sprite = this.sprite || g_sprites.TetrisObject;
 
@@ -28,10 +29,7 @@ function TetrisObject(descr) {
   // Set normal drawing scale, and warp state off
   this._scale = 1;
 
-  this.reRender();
 };
-
-
 
 TetrisObject.prototype = new Entity();
 
@@ -74,8 +72,16 @@ TetrisObject.prototype.myState = -1;
 //"Gravity"
 TetrisObject.prototype.dropRate = 1000 / NOMINAL_UPDATE_INTERVAL;
 
-TetrisObject.prototype.update = function (du) {
+//Sound globals
+const fall = new Audio('audio/fall.wav');
+const line = new Audio('audio/line.wav');
+const level = new Audio('audio/success.wav');
+const gameOver = new Audio('audio/gameover.wav');
+const clear = new Audio('audio/clear.wav');
+const game = new Audio('audio/tetris-gameboy-02.mp3')
+game.volume = 0.1;
 
+TetrisObject.prototype.update = function (du) {
   if (this.myState === 1 && GET_NEXT_TETROMINO) {
     if (!this.old) {
       this.old = true;
@@ -83,6 +89,7 @@ TetrisObject.prototype.update = function (du) {
       GET_NEXT_TETROMINO = false;
       this.myState = 0;
     }
+    this.reRender();
   }
 
   if (SWITCH_HOLDING_TETREMINOS) {
@@ -100,6 +107,7 @@ TetrisObject.prototype.update = function (du) {
         SWITCH_HOLDING_TETREMINOS = false;
       }
     }
+    //this.reRender();
   }
 
   if (this.myState !== 0) return;
@@ -145,7 +153,6 @@ TetrisObject.prototype.update = function (du) {
       this.cy = this.cy;
     }
 
-    // Skilyrði til að færa kubbinn ef það er vertical eða hliðar collision
     // Conditions for rotating the tetromino if there is a vertical or horizontal collision
     if (this.rotate()) {
       this.reset();
@@ -175,8 +182,6 @@ TetrisObject.prototype.update = function (du) {
       this.cy = g_grid.gridRows - newHeight;
     }
 
-
-
     if (!this.rotateCollision()) {
       // Rotate the tetromino if there is no collistion to another object
       this.reset()
@@ -195,9 +200,11 @@ TetrisObject.prototype.update = function (du) {
   this.dropRate -= du;
   if (this.dropRate < 0 && this.cy + this._height < g_grid.gridRows + 1) {
     this.reset();
+    //this.reRender()
     this.dropRate = g_grid.speed / NOMINAL_UPDATE_INTERVAL;
     this.oneDown();
   }
+
 };
 
 TetrisObject.prototype.reRender = function () {
@@ -279,9 +286,7 @@ TetrisObject.prototype.oneDown = function () {
       this.spawnNew();
     }
   } else {
-
     this.spawnNew();
-
   }
 }
 
@@ -298,7 +303,6 @@ TetrisObject.prototype.spawnNew = function () {
   // If player is still playing make new tetromino
   if (!g_grid.lost) {
     g_grid.checkRows();
-
     createTetro(1, null, false);
     GET_NEXT_TETROMINO = true;
   }
@@ -451,7 +455,7 @@ TetrisObject.prototype.render = function (ctx) {
 
   const tetro = this.currentTetromino;
 
-  // render me as the next tetromino
+  // Render me as the next tetromino
   if (this.myState === 1) {
     ctx.font = "30px Arial";
     ctx.fillText("Next:", gridRight + 50, gridTop + 50);
@@ -462,9 +466,10 @@ TetrisObject.prototype.render = function (ctx) {
 
       this.currentTetroSprite.drawAt(ctx, x, y);
     }
+    this.reRender();
   }
 
-  //render me as the hold tetromino
+  // Render me as the hold tetromino
   if (this.myState === 2) {
     ctx.font = "30px Arial";
     ctx.fillText("Holding:", gridRight + 50, gridMidVertical + 50);
@@ -476,6 +481,9 @@ TetrisObject.prototype.render = function (ctx) {
         this.currentTetroSprite.drawAt(ctx, x, y);
       }
     }
+    this.reRender();
   }
+
+  //this.reRender();
 
 };
