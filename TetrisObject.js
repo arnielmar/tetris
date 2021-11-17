@@ -107,7 +107,6 @@ TetrisObject.prototype.update = function (du) {
         SWITCH_HOLDING_TETREMINOS = false;
       }
     }
-    //this.reRender();
   }
 
   if (this.myState !== 0) return;
@@ -200,7 +199,6 @@ TetrisObject.prototype.update = function (du) {
   this.dropRate -= du;
   if (this.dropRate < 0 && this.cy + this._height < g_grid.gridRows + 1) {
     this.reset();
-    //this.reRender()
     this.dropRate = g_grid.speed / NOMINAL_UPDATE_INTERVAL;
     this.oneDown();
   }
@@ -483,7 +481,5 @@ TetrisObject.prototype.render = function (ctx) {
     }
     this.reRender();
   }
-
-  //this.reRender();
 
 };
