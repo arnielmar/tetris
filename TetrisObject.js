@@ -115,8 +115,6 @@ TetrisObject.prototype.update = function (du) {
   // EDGE COLLISIONS
   /////////////////////////////////////////////////////////////////////////////////////////////
 
-  // Held það sé í lagi að hafa þetta hérna, isColliding er þá bara fyrir hlut í hlut collision
-
   if (eatKey(this.KEY_LEFT)) {
     this.reset();
     this.oneLeft();

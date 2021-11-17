@@ -45,6 +45,8 @@ Grid.prototype.levelElem = document.getElementById('level');
 Grid.prototype.scoreElem = document.getElementById('score');
 
 Grid.prototype.highscores = [];
+// Ugly variable to only add score to highscores once
+Grid.prototype.hasBeenAddedToHighscore = false;
 
 Grid.prototype.generateGrid = function () {
   //createTetro();
@@ -124,10 +126,6 @@ Grid.prototype.drawBoard = function (ctx) {
 }
 
 Grid.prototype.restartFunction = function () {
-  // Add to highscore
-  this.highscores.push(this.score);
-  this.highscores.sort();
-  this.highscores.reverse();
   // Restart score, level, lines and speed
   this.score = 0;
   this.scoreElem.innerHTML = this.score;
@@ -146,9 +144,21 @@ Grid.prototype.restartFunction = function () {
   CURRENT_COORDINATES = [0, 4];
   this.resetGrid();
   createInitialObjects();
+
+  // Next score will be added to highscores
+  this.hasBeenAddedToHighscore = false;
 }
 
 Grid.prototype.drawFinalScore = function (ctx) {
+  // Add to highscore
+  if (!this.hasBeenAddedToHighscore) {
+    this.highscores.push(this.score);
+    this.highscores.sort((a, b) => {
+      return b - a;
+    });
+    this.hasBeenAddedToHighscore = true;
+  }
+
   const startX = this.cx - this.gridWidth * 3 / 8;
   const startY = this.cy - this.gridHeight * 3 / 8;
   const myWidth = 6 / 8 * this.gridWidth;
