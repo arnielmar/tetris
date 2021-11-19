@@ -13,8 +13,6 @@
 
 
 // A generic contructor which accepts an arbitrary descriptor object
-
-
 function TetrisObject(descr) {
   // Common inherited setup logic from Entity
   this.setup(descr);
@@ -28,12 +26,9 @@ function TetrisObject(descr) {
 
   // Set normal drawing scale, and warp state off
   this._scale = 1;
-
 };
 
 TetrisObject.prototype = new Entity();
-
-
 
 TetrisObject.prototype.rememberResets = function () {
   // Remember my reset positions
@@ -485,5 +480,4 @@ TetrisObject.prototype.render = function (ctx) {
     }
     this.reRender();
   }
-
-};
+}

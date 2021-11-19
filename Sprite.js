@@ -23,8 +23,7 @@ function Sprite(image) {
 }
 
 Sprite.prototype.drawAt = function (ctx, x, y) {
-  ctx.drawImage(this.image,
-    x, y);
+  ctx.drawImage(this.image, x, y);
 };
 
 Sprite.prototype.drawCenteredAt = function (ctx, cx, cy, rotation) {

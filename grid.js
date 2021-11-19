@@ -52,7 +52,6 @@ Grid.prototype.highscores = [];
 Grid.prototype.hasBeenAddedToHighscore = false;
 
 Grid.prototype.generateGrid = function () {
-  //createTetro();
   for (var c = 0; c <= this.gridColumns; c++) {
     this.cells[c] = [];
     for (var r = 0; r <= this.gridRows; r++) {
@@ -249,20 +248,17 @@ Grid.prototype.checkRows = function () {
     for (let c = 0; c <= this.gridColumns; c++) {
       if (this.cells[c][r].status !== 2) {
         rowFull = false;
-        //fall.play();
         break;
       }
       cellSprites.push(this.cells[c][r].sprite);
     }
     if (rowFull) {
       this.ongoingAnimation = true;
-      //line.play();
       clear.play();
       rowsFull += 1;
       for (let c = 0; c <= this.gridColumns; c++) {
         this.cells[c][r].status = 0;
       }
-      debugger;
       entityManager.makeLineDelete({
         cellSprites : cellSprites,
 
@@ -275,7 +271,6 @@ Grid.prototype.checkRows = function () {
 
         numColumns : this.gridColumns
       })
-      // this.dropLines(r);
     } else {
       fall.play();
       fall.sound = 0.2;
@@ -283,7 +278,6 @@ Grid.prototype.checkRows = function () {
   }
 
   this._checkLevelUp(rowsFull)
-
   this._addScore(rowsFull);
 }
 
