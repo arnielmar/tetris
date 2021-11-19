@@ -27,7 +27,7 @@ Sprite.prototype.drawAt = function (ctx, x, y) {
     x, y);
 };
 
-Sprite.prototype.drawCentredAt = function (ctx, cx, cy, rotation) {
+Sprite.prototype.drawCenteredAt = function (ctx, cx, cy, rotation) {
   if (rotation === undefined) rotation = 0;
 
   var w = this.width,

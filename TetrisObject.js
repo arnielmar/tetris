@@ -303,8 +303,10 @@ TetrisObject.prototype.spawnNew = function () {
   // If player is still playing make new tetromino
   if (!g_grid.lost) {
     g_grid.checkRows();
-    createTetro(1, null, false);
-    GET_NEXT_TETROMINO = true;
+    if (!g_grid.ongoingAnimation) {
+      createTetro(1, null, false);
+      GET_NEXT_TETROMINO = true;
+    }
   }
 }
 

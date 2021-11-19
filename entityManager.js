@@ -27,6 +27,7 @@ var entityManager = {
   // "PRIVATE" DATA
 
   _tetrisObjects: [],
+  _deleteLines: [],
 
   // "PRIVATE" METHODS
 
@@ -47,12 +48,16 @@ var entityManager = {
   // i.e. thing which need `this` to be defined.
   //
   deferredSetup: function () {
-    this._categories = [this._tetrisObjects];
+    this._categories = [this._tetrisObjects, this._deleteLines];
   },
 
   generateObject: function (descr) {
     //this._objects(new TetrisObject(descr));
     this._tetrisObjects.push(new TetrisObject(descr));
+  },
+
+  makeLineDelete: function (descr) {
+    this._deleteLines.push(new LineDelete(descr));
   },
 
   clear: function () {

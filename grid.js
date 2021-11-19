@@ -1,6 +1,6 @@
 "use strict";
 
-Grid.prototype - new Entity();
+Grid.prototype = new Entity();
 
 function Grid(descr) {
   for (var property in descr) {
@@ -34,6 +34,9 @@ Grid.prototype.cellHeight = 30;
 
 //Þetta er þá gridið okkar
 Grid.prototype.cells = [];
+
+// to let the grid know to make a new tetris object when the row animation is done
+Grid.prototype.ongoingAnimation = false;
 
 // Scoring system
 Grid.prototype.lines = 0;
@@ -242,30 +245,37 @@ Grid.prototype.checkRows = function () {
   let rowsFull = 0;
   for (let r = this.gridRows; r >= 0; r--) {
     let rowFull = true;
+    let cellSprites = [];
     for (let c = 0; c <= this.gridColumns; c++) {
       if (this.cells[c][r].status !== 2) {
         rowFull = false;
         //fall.play();
         break;
       }
+      cellSprites.push(this.cells[c][r].sprite);
     }
     if (rowFull) {
+      this.ongoingAnimation = true;
       //line.play();
       clear.play();
       rowsFull += 1;
       for (let c = 0; c <= this.gridColumns; c++) {
         this.cells[c][r].status = 0;
       }
-      for (let row = r - 1; row >= 0; row--) {
-        for (let col = 0; col <= this.gridColumns; col++) {
-          if (this.cells[col][row].status === 2) {
-            this.cells[col][row].status = 0;
-            this.cells[col][row + 1].status = 2;
-            this.cells[col][row + 1].sprite = this.cells[col][row].sprite;
-          }
-        }
-      }
-      r++;
+      debugger;
+      entityManager.makeLineDelete({
+        cellSprites : cellSprites,
+
+        cellWidth : this.cellWidth,
+        cellHeight : this.cellHeight,
+        cellPadding : this.cellPadding,
+
+        startX : this.cx - this.gridWidth/2,
+        startY : (this.cy - this.gridHeight/2) + (r * this.cellHeight + r * this.cellPadding),
+
+        numColumns : this.gridColumns
+      })
+      // this.dropLines(r);
     } else {
       fall.play();
       fall.sound = 0.2;
@@ -275,4 +285,19 @@ Grid.prototype.checkRows = function () {
   this._checkLevelUp(rowsFull)
 
   this._addScore(rowsFull);
+}
+
+Grid.prototype.dropLines = function() {
+  let r = this.gridRows;
+
+  for (let row = r - 1; row >= 0; row--) {
+    for (let col = 0; col <= this.gridColumns; col++) {
+      if (this.cells[col][row].status === 2) {
+        this.cells[col][row].status = 0;
+        this.cells[col][row + 1].status = 2;
+        this.cells[col][row + 1].sprite = this.cells[col][row].sprite;
+      }
+    }
+  }
+  r++;
 }
